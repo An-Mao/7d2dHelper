@@ -32,6 +32,21 @@ public class KitNet {
         _Log.debug(response);
     }
 
+    public static KitData.BanUser getBan(String sid){
+        if (sid.contains("_")) sid = sid.split("_")[1];
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json;charset=UTF-8");
+        String response = Net.sendData(url + "cgi/user_ban","POST",headers,"{\"q\":\""+sid+"\",\"perPage\":\"25\",\"page\":\"1\",\"accessToken\":\""+getToken()+"\"}");
+        _Log.debug(response);
+        Gson gson = new Gson();
+        KitData.BanInfo ban = gson.fromJson(response, KitData.BanInfo.class);
+        if (ban != null && ban.result() == 1 && ban.users() != null && ban.users().length > 0) {
+            return ban.users()[0];
+        }
+        return null;
+    }
+
+
 
     public static void stopNet() {
         HashMap<String, String> headers = new HashMap<>();
@@ -87,5 +102,26 @@ public class KitNet {
         headers.put("Connection","keep-alive");
         headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36;");
         return headers;
+    }
+
+    public static boolean unBan(String steamID) {
+        if (steamID.contains("_")) steamID = steamID.split("_")[1];
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json;charset=UTF-8");
+        String response = Net.sendData(url + "cgi/user_act_unban","POST",headers,"{\"steamid\":\""+steamID+"\",\"accessToken\":\""+getToken()+"\"}");
+        _Log.debug(response);
+        return BotNet.checkResult(response);
+    }
+
+
+
+
+    public static boolean kick(String steamID){
+        if (steamID.contains("_")) steamID = steamID.split("_")[1];
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json;charset=UTF-8");
+        String response = Net.sendData(url + "cgi/user_act_kick","POST",headers,"{\"steamid\":\""+steamID+"\",\"accessToken\":\""+getToken()+"\",\"reason\":\"command\"}");
+        _Log.debug(response);
+        return BotNet.checkResult(response);
     }
 }

@@ -31,7 +31,7 @@ public class BotNet {
         return checkResult(response);
     }
     public static boolean give_Item(String user, String name, int count, int quality) {
-        String url = rootUrl +"api/action_giveitem?key="+ getToken() +"&p="+user+"&name="+name+"&count="+count+"&quality="+quality;
+        String url = rootUrl +"api/action_giveitem?key="+ getToken() +"&p="+user+"&name="+Net.urlEncode(name)+"&count="+count+"&quality="+quality;
         String response = Net.sendGetData(url);
         _Log.debug(response);
         return checkResult(response);

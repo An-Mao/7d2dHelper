@@ -11,7 +11,9 @@ public class Config extends _JsonConfig<ConfigData> {
     public Config() {
         super(filePath, """
                 {
+                    "logColor":false,
                     "isDebug":false,
+                    "qqGroup":["123456","431933201"],
                     "serverName":"Server",
                     "kitExePath":"D:\\\\somdir\\\\kit.exe",
                     "singInMaxPoint":10000,
@@ -22,6 +24,9 @@ public class Config extends _JsonConfig<ConfigData> {
                     "botHost": "127.0.0.1:26906",
                     "botUsername":"admin",
                     "botPassword":"123456",
+                    "acHost": "127.0.0.1:26906",
+                    "acUsername":"admin",
+                    "acPassword":"123456",
                     "clearSetTime":600,
                     "actualRestartTime":7200,
                     "waitTime":60,
@@ -34,7 +39,11 @@ public class Config extends _JsonConfig<ConfigData> {
                     "voteScale":0.5,
                     "voteCooldown":300,
                     "qqHost":"127.0.0.1:3000",
-                    "adminQQ":["123456"]
+                    "adminQQ":["123456"],
+                    "unBanNum":5,
+                    "bindNeedGameMsg":false,
+                    "qqMsgType":0,
+                    "enableKitHeartbeat":false
                 }
                 """, new TypeToken<>() {
         });

@@ -41,8 +41,8 @@ public class Heartbeat {
                         setMsgId();
                     }
                 }else {
-                    _Log.error("拉取服务器信息失败，60秒后重试");
-                    heartInterval = 60000;
+                    _Log.error("拉取服务器信息失败，10秒后重试");
+                    heartInterval = 10000;
 
                 }
             } catch (InterruptedException e) {
@@ -50,7 +50,7 @@ public class Heartbeat {
                 break;
             }
         }
-    },60000);
+    },10000);
     public static boolean checkMsgData(KitData.GameMsg msg){
         return msg != null && msg.result() == 1 && msg.list() != null && msg.list().length > 0;
     }
@@ -66,9 +66,13 @@ public class Heartbeat {
     }
 
     public static void start() {
-        _Log.info("心跳启动");
-        Start = true;
-        heart.start();
+        if (Config.I.getDatas().enableKitHeartbeat) {
+            _Log.info("心跳启动");
+            Start = true;
+            heart.start();
+        }else {
+            _Log.info("心跳已禁用");
+        }
     }
     public static void stop() {
         Start = false;

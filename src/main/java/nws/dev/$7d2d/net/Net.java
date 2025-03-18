@@ -26,6 +26,7 @@ public class Net {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
     public static String sendGetData(String url){
+        _Log.debug("Get: "+url);
         return sendData(url,"GET",null,"");
     }
     public static String sendData(String url, String type, HashMap<String, String> dataHead, String dataSend){

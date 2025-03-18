@@ -16,6 +16,7 @@ public class _ThreadMonitor {
 
     public void start() {
         thread = createThread(task);
+        //thread.setDaemon(true);
         thread.start();
     }
 

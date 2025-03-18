@@ -1,6 +1,7 @@
 package nws.dev.$7d2d.data;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class QQData {
     public static class Message {
@@ -18,14 +19,15 @@ public class QQData {
         public String font;
         public String sub_type;
 
-        //public List<Msg> message;
+        public List<Msg> message;
         public String message_format;
         public String post_type;
         public String group_id = "";
 
         public record Sender(String user_id, String nickname, String card,String role,String title) { }
-        public record Msg(String type, MsgData data) { }
-        public record MsgData(String text) { }
+        public record Msg(String type, HashMap<String,String> data) { }
+        public record MsgData(HashMap<String,String> data) { }
+
     }
     public record Msg(MsgType type, HashMap<String,String> data){
         public static Msg create(MsgType type, String key, String value){
@@ -43,6 +45,8 @@ public class QQData {
 
     }
     public enum MsgType{
+        At("at"),
+        Reply("reply"),
         Text("text"),
         Image("image");
         private final String s;

@@ -40,4 +40,9 @@ public class BotData {
             return "";
         }
     }
+
+    public record GameMsgHistory(int code,String msg,GameMsg[] data) {}
+    public record GameMsg(String date,int ia,int id,String msg,String pn,String uid) {}
+    public record MsgHistory(int result,int count,Msg[] data) {}
+    public record Msg(String date,int ia,int id,String msg,String pn,String uid,int type) {}
 }

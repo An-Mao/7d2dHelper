@@ -16,4 +16,6 @@ public class KitData {
     public record PlayerInfo(String steamid,String name){ }
     public record GsList(int result,GsInfo[] list){}
     public record GsInfo(String uuid,int status,int players,int time,int timetype,int fps){}
+    public record BanInfo(int result,int total,BanUser[] users){}
+    public record BanUser(String steamid,String name,String pos,long banuntil,long createtime,long logintime,String banreason,String ip){}
 }

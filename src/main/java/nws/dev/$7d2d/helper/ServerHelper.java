@@ -12,18 +12,20 @@ public class ServerHelper {
         //_Log.info();
         for (String msg:msgs) BotNet.sendPublicMsg(msg);
     }
-    public static void sendServerCommand(String msg){
+    public static boolean sendServerCommand(String msg){
         _Log.debug(msg);
         String c = Urls.commandUrl+"&command="+ Net.urlEncode(msg);
         _Log.debug(c);
         String response = Net.sendGetData(c);
         _Log.debug(response);
-        /*
+
         Gson gson = new Gson();
         KitData.Command res = gson.fromJson(response, KitData.Command.class);
         _Log.debug(res.result());
 
-         */
+        return res.result().equals("1");
+
+
     }
     public static KitData.PlayerInfo[] getPlayerList(){
         String response = Net.sendGetData(Urls.onlinePlayerUrl);

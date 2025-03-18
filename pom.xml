@@ -6,7 +6,7 @@
 
     <groupId>nws.dev</groupId>
     <artifactId>7d2d</artifactId>
-    <version>24.12.1303</version>
+    <version>25.03.0800</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

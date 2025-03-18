@@ -3,6 +3,7 @@ package nws.dev.$7d2d.config;
 import java.util.List;
 
 public class ConfigData {
+    public boolean logColor;
     public String serverName;
     public boolean isDebug;
     public String adminToken;
@@ -35,4 +36,14 @@ public class ConfigData {
     public int restartMode;
     public int restartTime;
     public String kitExePath;
+    public List<String> qqGroup;
+    public String acHost;
+    public String acUsername;
+    public String acPassword;
+
+    public int unBanNum;
+    public boolean bindNeedGameMsg;
+    public int qqMsgType;
+
+    public boolean enableKitHeartbeat;
 }

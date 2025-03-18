@@ -28,7 +28,7 @@ public class _Log {
 
     static {
         // 初始化是否支持 ANSI 颜色
-        ENABLE_COLOR = isAnsiSupported();
+        ENABLE_COLOR = Config.I.getDatas().logColor && isAnsiSupported();
 
         // 启动日志写入线程
         Thread logThread = new Thread(() -> {
