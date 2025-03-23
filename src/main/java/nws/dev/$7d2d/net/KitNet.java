@@ -3,9 +3,14 @@ package nws.dev.$7d2d.net;
 import com.google.gson.Gson;
 import nws.dev.$7d2d.config.Config;
 import nws.dev.$7d2d.data.KitData;
+import nws.dev.$7d2d.data.PlayerInfoData;
+import nws.dev.$7d2d.data.PostData;
 import nws.dev.$7d2d.data.Web;
 import nws.dev.$7d2d.system._Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class KitNet {
@@ -46,6 +51,12 @@ public class KitNet {
         return null;
     }
 
+    public static String formatSteamId(String sid){
+
+        if (sid.contains("_")) sid = sid.split("_")[1];
+        return sid;
+
+    }
 
 
     public static void stopNet() {
@@ -61,7 +72,22 @@ public class KitNet {
         String response = Net.sendData(url + "cgi/gs_startdefault","POST",headers,"{\"accessToken\":\""+getToken()+"\"}");
         _Log.debug(response);
     }
-
+    public static void refreshMap(){
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json;charset=UTF-8");
+        String response = Net.sendData(url + "cgi/mapname_set","POST",headers,"{\"accessToken\":\""+getToken()+"\" ,\"mapname\":\""+getMapName()+"\"}");
+        _Log.debug(response);
+    }
+    public static String getMapName(){
+        Calendar rightNow = Calendar. getInstance();
+        String name = Config.I.getDatas().mapName.replace("<Month>", String.valueOf(rightNow.get(Calendar.MONTH) + 1));
+        name = name.replace("<Day>", String.valueOf(rightNow.get(Calendar.DAY_OF_MONTH)));
+        name = name.replace("<Week>", String.valueOf(rightNow.get(Calendar.WEEK_OF_MONTH)));
+        name = name.replace("<WeekDay>", String.valueOf(rightNow.get(Calendar.DAY_OF_WEEK)));
+        name = name.replace("<Year>", String.valueOf(rightNow.get(Calendar.YEAR)));
+        name = name.replace("<Hour>", String.valueOf(rightNow.get(Calendar.HOUR)));
+        return name.replace("<Minute>", String.valueOf(rightNow.get(Calendar.MINUTE)));
+    }
     public static KitData.GsList getGsList(){
         _Log.debug(Urls.gsListUrl);
         String data = "{\"accessToken\":\""+ getToken()+"\"}";
@@ -122,6 +148,37 @@ public class KitNet {
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/user_act_kick","POST",headers,"{\"steamid\":\""+steamID+"\",\"accessToken\":\""+getToken()+"\",\"reason\":\"command\"}");
         _Log.debug(response);
+        return BotNet.checkResult(response);
+    }
+
+
+
+
+
+
+
+    public static PlayerInfoData getBagItems(String steamID){
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json;charset=UTF-8");
+        PostData postData = new PostData();
+        postData.add("accessToken",getToken());
+        postData.add("steamid",steamID);
+        _Log.debug(postData.toJson());
+        String response = Net.sendData(url + "cgi/user_detail","POST",headers,postData.toJson());
+        //_Log.debug(response);
+        Gson gson = new Gson();
+        return gson.fromJson(response, PlayerInfoData.class);
+    }
+    public static boolean removeBagItems(String steamID,String index){
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json;charset=UTF-8");
+        PostData postData = new PostData();
+        postData.add("accessToken",getToken());
+        postData.add("steamid",steamID);
+        postData.add("loc",index);
+        _Log.debug(postData.toJson());
+        String response = Net.sendData(url + "cgi/user_act_removeitem_bag","POST",headers,postData.toJson());
+        //_Log.debug(response);
         return BotNet.checkResult(response);
     }
 }

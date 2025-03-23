@@ -5,6 +5,7 @@ import nws.dev.$7d2d.config.Config;
 import nws.dev.$7d2d.config.EventsConfig;
 import nws.dev.$7d2d.data.KitData;
 import nws.dev.$7d2d.helper.QQHelper;
+import nws.dev.$7d2d.net.KitNet;
 import nws.dev.$7d2d.net.Urls;
 import nws.dev.$7d2d.system._Log;
 import nws.dev.$7d2d.system._ThreadMonitor;
@@ -20,8 +21,10 @@ public class Events {
             try {
                 Thread.sleep(3000);
                 if (day != Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+                    _Log.info("刷新事件");
                     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
                     no.clear();
+                    KitNet.refreshMap();
                 }
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 String k = sdf.format(new Date());

@@ -2,10 +2,14 @@ package nws.dev.$7d2d.net;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
+import nws.dev.$7d2d.command.QQAtCommand;
+import nws.dev.$7d2d.command.QQExCommand;
+import nws.dev.$7d2d.command.QQUsualCommand;
 import nws.dev.$7d2d.command.ServerCommand;
 import nws.dev.$7d2d.config.*;
 import nws.dev.$7d2d.data.BotData;
 import nws.dev.$7d2d.data.KitData;
+import nws.dev.$7d2d.data.PlayerInfoData;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.QQHelper;
 import nws.dev.$7d2d.helper.ServerHelper;
@@ -38,10 +42,12 @@ public class QQNet {
                     _Log.debug("收到来自 " + message.user_id + " 的消息");
 
 
-
-                    boolean canRun = !QQMsg.isSignedInPlus(message);
-                    if (canRun) canRun = !usualMsg(message);
-                    if (canRun) canRun = !exMsg(message);
+                    QQAtCommand atCommand = new QQAtCommand(message);
+                    boolean canRun = !atCommand.check();
+                    QQUsualCommand usualCommand = new QQUsualCommand(message);
+                    if (canRun) canRun = !usualCommand.check();
+                    QQExCommand exCommand = new QQExCommand(message);
+                    if (canRun) canRun = !exCommand.check();
                     if (canRun) canRun = !QAMsg(message);
                     if (canRun && Config.I.getDatas().adminQQ.contains(message.user_id)) {
                         if (adminMsg(message)) response = "true";
@@ -65,6 +71,7 @@ public class QQNet {
         return true;
     }
 
+    /*
     private static boolean exMsg(QQData.Message message) {
         String[] parts = message.raw_message.split(" ");
         if (parts.length == 2) {
@@ -192,9 +199,13 @@ public class QQNet {
         return false;
     }
 
+     */
+
     public static HashMap<String, String> bindUser = new HashMap<>();
     public static HashMap<String, List<String>> banUser = new HashMap<>();
+    public static HashMap<String, Long> saveItem = new HashMap<>();
 
+    /*
     public static boolean usualMsg(QQData.Message message){
         return switch (message.raw_message) {
             case "帮助" -> {
@@ -375,15 +386,59 @@ public class QQNet {
                 }
                 yield true;
             }
+            case "申请跟档" ->{
+                _Log.debug("申请跟档");
+                UserConfig config = new UserConfig(message.user_id);
+                if (config.isBind()) {
+                    UserConfig.RecordItem recordItem = config.getRecordItem();
+                    if (!recordItem.getDatas().isEmpty()) {
+                        _Log.debug("已申请跟档");
+                        QQHelper.easySendGroupReplyMsg(message.group_id, message.message_id, "您已申请过跟档，如果想要修改，请先提取物品。");
+                        yield true;
+                    }else {
+                        int recordItemLimit = Config.I.getDatas().recordItemLimit + config.getRecordItemLimit();
+                        if (System.currentTimeMillis() - saveItem.getOrDefault(message.user_id, 0L) > 30) {
+                            saveItem.put(message.user_id, System.currentTimeMillis());
+                            QQHelper.easySendGroupReplyMsg(message.group_id, message.message_id, "请确认是否已将物品上的模组卸下，您可以跟档"+recordItemLimit+"个物品，如果确认无误请再次发送此指令。");
+                        } else {
+                            saveItem.remove(message.user_id);
+                            BotData.PlayerInfo info = BotNet.getOnlinePlayerBySteamID(config.getSteamID());
+                            if (info == null) {
+                                PlayerInfoData playerInfoData = KitNet.getBagItems(KitNet.formatSteamId(config.getSteamID()));
+                                if (playerInfoData != null) {
+                                    if (playerInfoData.bag().size() > recordItemLimit) {
+                                        _Log.debug("背包物品过多");
+                                        QQHelper.easySendGroupReplyMsg(message.group_id, message.message_id, "背包物品过多，请清理后再试");
+                                    } else {
+                                        HashMap<String, Integer> items = playerInfoData.getBagItems();
+                                        recordItem.getDatas().clear();
+                                        recordItem.getDatas().putAll(items);
+                                        recordItem.save();
+                                        _Log.debug("跟档成功");
+                                        QQHelper.easySendGroupReplyMsg(message.group_id, message.message_id, "跟档成功");
+                                    }
+                                }
+                            } else {
+                                _Log.debug("玩家在线");
+                                QQHelper.easySendGroupReplyMsg(message.group_id, message.message_id, "请离线后再试");
+                            }
+                        }
+                    }
+                }else {
+                    _Log.debug("未绑定账号");
+                    QQHelper.easySendGroupReplyMsg(message.group_id, message.message_id, "未绑定账号，请先绑定账号");
+                }
+                yield true;
+            }
             default -> false;
         };
     }
 
+     */
+
     public static String At(String id){
         return "";//"[CQ:at,steamid="+id+"] ";
     }
-
-
 
 
     public static Thread restartThread = new Thread(() -> {

@@ -43,7 +43,11 @@ public class Config extends _JsonConfig<ConfigData> {
                     "unBanNum":5,
                     "bindNeedGameMsg":false,
                     "qqMsgType":0,
-                    "enableKitHeartbeat":false
+                    "enableKitHeartbeat":false,
+                    "mapName":"<Month>月<Day>日新档",
+                    "recordItemDefault":20,
+                    "recordItemLimit":20,
+                    "recordItemPoint":500000
                 }
                 """, new TypeToken<>() {
         });

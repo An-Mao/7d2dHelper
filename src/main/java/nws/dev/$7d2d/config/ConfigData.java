@@ -46,4 +46,9 @@ public class ConfigData {
     public int qqMsgType;
 
     public boolean enableKitHeartbeat;
+    public String mapName;
+    public int recordItemDefault;
+    public int recordItemLimit;
+    public int recordItemPoint;
+
 }

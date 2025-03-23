@@ -1,10 +1,13 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
+import nws.dev.$7d2d.data.PlayerInfoData;
 import nws.dev.$7d2d.json._JsonConfig;
 import nws.dev.$7d2d.system.DataTable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class UserConfig extends _JsonConfig<UserData> {
     public UserConfig(String qq) {
@@ -14,7 +17,9 @@ public class UserConfig extends _JsonConfig<UserData> {
                     "platformid":"",
                     "reward":{
                         "NewbiePack":false
-                    }
+                    },
+                    "recordItemLimit":0,
+                    "canExtractSaveItem":false
                 }
                 """, new TypeToken<>() {
         });
@@ -51,5 +56,28 @@ public class UserConfig extends _JsonConfig<UserData> {
 
     public String getSteamID() {
         return getDatas().platformid;
+    }
+
+
+    public int getRecordItemLimit() {
+        return getDatas().recordItemLimit;
+    }
+
+    public List<PlayerInfoData.ItemData> getRecordItemMap() {
+        return getRecordItem().getDatas();
+    }
+    public RecordItem getRecordItem() {
+        return new RecordItem(getSteamID());
+    }
+
+    public static class RecordItem extends _JsonConfig<List<PlayerInfoData.ItemData>>{
+
+        public RecordItem(String steamID) {
+            super(DataTable.UserItemDir + "/" + steamID + ".json", "", new TypeToken<>() {},false);
+        }
+        public List<PlayerInfoData.ItemData> getDatas() {
+            if (this.datas == null) this.datas = new ArrayList<>();
+            return this.datas;
+        }
     }
 }

@@ -7,6 +7,7 @@ import nws.dev.$7d2d.config.RewardData;
 import nws.dev.$7d2d.config.UserConfig;
 import nws.dev.$7d2d.data.BotData;
 import nws.dev.$7d2d.data.Web;
+import nws.dev.$7d2d.helper.OtherHelper;
 import nws.dev.$7d2d.system._Log;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class BotNet {
         int page = 1,limit = 10;
         String name = "";
         while (name.isEmpty()) {
-            String url = rootUrl + "api/localizations?key=" + getToken() + "&page=" + page + "&limit=" + limit + "&keyword=" + itemId;
+            String url = rootUrl + "api/localizations?key=" + getToken() + "&page=" + page + "&limit=" + limit + "&keyword=" + Net.urlEncode(itemId);
             String response = Net.sendGetData(url);
             _Log.debug(response);
             Gson gson = new Gson();
@@ -60,6 +61,7 @@ public class BotNet {
             if (page * limit >= res.count()) break;
             else page++;
         }
+        if(name.isEmpty()) name = itemId;
         return name;
     }
 
@@ -192,7 +194,7 @@ public class BotNet {
     private static String giveItem(UserConfig user, String pack, String name, int count, int quality) {
         if (give_Item(user.getSteamID(), name, count, quality)) {
             user.setReward(pack);
-            return "您成功领取礼包，获得"+quality+"品的【"+getItemName(name)+"】×"+count;
+            return "您成功领取礼包，获得"+quality+"品的【"+ OtherHelper.removeColorCodes(getItemName(name))+"】×"+count;
         }
         else return "领取失败";
     }

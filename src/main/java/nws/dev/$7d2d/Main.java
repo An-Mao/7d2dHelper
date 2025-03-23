@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import nws.dev.$7d2d.command.ServerCommand;
 import nws.dev.$7d2d.config.*;
 import nws.dev.$7d2d.data.BotData;
+import nws.dev.$7d2d.data.PlayerInfoData;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.event.Events;
 import nws.dev.$7d2d.helper.QQHelper;
@@ -17,24 +18,33 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
-    public static final String Version = "25.03.1000";
+    public static final String Version = "25.03.2300";
     public static void main(String[] args) throws IOException {
         init();
     }
     private static void test(){
+        /*
         String test = """
             {"self_id":1977970939,"user_id":751898988,"time":1741425113,"message_id":1407333403,"message_seq":58072,"message_type":"group","sender":{"user_id":751898988,"nickname":"猫","card":"","role":"owner","title":""},"raw_message":"签到","font":14,"sub_type":"normal","message":[{"type":"text","data":{"text":"签到"}}],"message_format":"array","post_type":"message","group_id":164447436}
             """;
 
+         */
         //{"self_id":1977970939,"user_id":751898988,"time":1741425113,"message_id":1407333403,"message_seq":58072,"message_type":"group","sender":{"user_id":751898988,"nickname":"猫","card":"","role":"owner","title":""},"raw_message":"签到[CQ:at,qq=1977970939,name=nekowq]","font":14,"sub_type":"normal","message":[{"type":"text","data":{"text":"签到"}},{"type":"at","data":{"qq":"1977970939","name":"nekowq"}}],"message_format":"array","post_type":"message","group_id":164447436}
+        /*
         Gson gson = new Gson();
         QQData.Message message = gson.fromJson(test, QQData.Message.class);
         _Log.info(String.valueOf(QQNet.usualMsg(message)));
 
+         */
+        //"76561198405695513"
+        PlayerInfoData playerInfoData = KitNet.getBagItems("76561198405695513");
+        _Log.info(playerInfoData.entityid());
+        _Log.info("数量："+ playerInfoData.bag().size());
+
+
     }
     public static void init() throws IOException{
         _Log.info("当前版本："+Version);
-        //test();
         _Log.info("开始初始化配置文件");
         _Log.info("签到奖励",DailyRewardsConfig.I.getDatas().toString());
         _Log.info("问答",QA.I.getDatas().keySet().toString());
@@ -47,8 +57,9 @@ public class Main {
         Thread inputThread = runInputThread();
         inputThread.start();
 
-
+        //_Log.info(BotNet.getItemName("自动入包模组"));
         //KitNet.getBan("76561198193776909");
+        //test();
     }
 
     private static void loginUser(){
