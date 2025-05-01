@@ -31,3 +31,4 @@ bin/
 # 项目排除路径
 /target/
 /config/
+/cache/

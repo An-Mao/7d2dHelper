@@ -1,9 +1,9 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
+import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 import nws.dev.$7d2d.net.BotNet;
-import nws.dev.$7d2d.system.DataTable;
 import nws.dev.$7d2d.system._Log;
 
 import java.time.LocalDate;
@@ -106,11 +106,11 @@ public class SingInConfig extends _JsonConfig<HashMap<String, Long>> {
         DailyRewardsConfig.I.getDatas().forEach(dailyRewards -> {
             if (dailyRewards.getType() == DailyRewardsConfig.RewardType.POINT) {
                 int point = dailyRewards.getCount();
-                if (point > 0) BotNet.send_point(steamid, point);
+                if (point > 0) BotNet.sendPoint(steamid, point);
                 s.append("\\n").append(point).append(dailyRewards.name() == null ? "积分" : dailyRewards.name());
             }else if (dailyRewards.getType() == DailyRewardsConfig.RewardType.ITEM) {
                 int count = dailyRewards.getCount();
-                if (count > 0) BotNet.give_Item(steamid, dailyRewards.id(),count, dailyRewards.quality());
+                if (count > 0) BotNet.giveItem(steamid, dailyRewards.id(),count, dailyRewards.quality());
                 s.append("\\n").append(count).append(dailyRewards.name());
             }
         });

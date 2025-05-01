@@ -5,14 +5,10 @@ import com.sun.net.httpserver.HttpServer;
 import nws.dev.$7d2d.command.QQAtCommand;
 import nws.dev.$7d2d.command.QQExCommand;
 import nws.dev.$7d2d.command.QQUsualCommand;
-import nws.dev.$7d2d.command.ServerCommand;
-import nws.dev.$7d2d.config.*;
-import nws.dev.$7d2d.data.BotData;
-import nws.dev.$7d2d.data.KitData;
-import nws.dev.$7d2d.data.PlayerInfoData;
+import nws.dev.$7d2d.config.Config;
+import nws.dev.$7d2d.config.QA;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.QQHelper;
-import nws.dev.$7d2d.helper.ServerHelper;
 import nws.dev.$7d2d.system._Log;
 
 import java.io.IOException;
@@ -20,14 +16,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class QQNet {
+    private static HttpServer server = null;
     public static void listen() throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(Config.I.getDatas().listenPort), 0);
-        _Log.info("HTTP 服务器启动，正在监听端口 "+ Config.I.getDatas().listenPort);
+        server = HttpServer.create(new InetSocketAddress(Config.I.listenPort()), 0);
+        _Log.info("HTTP 服务器启动，正在监听端口 "+ Config.I.listenPort());
         server.createContext("/", exchange -> {
             if ("POST".equals(exchange.getRequestMethod())) {
                 InputStream inputStream = exchange.getRequestBody();
@@ -37,8 +31,8 @@ public class QQNet {
                 Gson gson = new Gson();
                 QQData.Message message = gson.fromJson(json, QQData.Message.class);
 
-                if (message != null && Config.I.getDatas().qqGroup.contains(message.group_id)) {
-                    if (message.user_id.isEmpty() || message.group_id.isEmpty()) return;
+                if (message != null) {
+                    if (message.user_id.isEmpty()) return;
                     _Log.debug("收到来自 " + message.user_id + " 的消息");
 
 
@@ -49,9 +43,9 @@ public class QQNet {
                     QQExCommand exCommand = new QQExCommand(message);
                     if (canRun) canRun = !exCommand.check();
                     if (canRun) canRun = !QAMsg(message);
-                    if (canRun && Config.I.getDatas().adminQQ.contains(message.user_id)) {
-                        if (adminMsg(message)) response = "true";
-                    } else response = "true";
+                    if (!canRun) {
+                        response = "true";
+                    }
                 }
                 exchange.sendResponseHeaders(200, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
@@ -200,11 +194,6 @@ public class QQNet {
     }
 
      */
-
-    public static HashMap<String, String> bindUser = new HashMap<>();
-    public static HashMap<String, List<String>> banUser = new HashMap<>();
-    public static HashMap<String, Long> saveItem = new HashMap<>();
-
     /*
     public static boolean usualMsg(QQData.Message message){
         return switch (message.raw_message) {
@@ -441,6 +430,7 @@ public class QQNet {
     }
 
 
+    /*
     public static Thread restartThread = new Thread(() -> {
         int time = Config.I.getDatas().restartTime;
         BotNet.sendPublicMsg("即将重启服务器，请您做好准备以防数据丢失。");
@@ -474,19 +464,6 @@ public class QQNet {
         runKitExe();
         KitNet.startServer();
     });
-
-    public static void runKitExe() {
-        _Log.info(Config.I.getDatas().kitExePath);
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(Config.I.getDatas().kitExePath);
-            Process process = processBuilder.start();
-            //int exitCode = process.waitFor();
-            Thread.sleep(10000);
-            //System.out.println("进程退出码: " + exitCode);
-        } catch (IOException | InterruptedException e) {
-            _Log.error(e.getMessage());
-        }
-    }
 
     public static long wt = 0;
     public static boolean adminMsg(QQData.Message s){
@@ -542,6 +519,8 @@ public class QQNet {
         };
     }
 
+     */
+
     public static boolean isCooldown = false;
     private static final Thread tt = new Thread(() -> {
         _Log.info("准备重新恢复时间。");
@@ -564,5 +543,10 @@ public class QQNet {
         isCooldown = true;
         KitNet.restart(Config.I.getDatas().clearSetTime);
         tt.start();
+    }
+
+
+    public static void stop(){
+        if (server != null) server.stop(0);
     }
 }

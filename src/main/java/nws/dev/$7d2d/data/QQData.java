@@ -38,7 +38,10 @@ public class QQData {
         @Override
         public String toString() {
             StringBuilder s = new StringBuilder("{");
-            data.forEach((s1, s2) -> s.append("\"").append(s1).append("\":\"").append(s2).append("\""));
+            data.forEach((s1, s2) -> s.append("\"").append(s1).append("\":\"").append(s2).append("\","));
+            if (s.charAt(s.length() - 1) == ',') {
+                s.deleteCharAt(s.length() - 1);
+            }
             s.append("}");
             return "{\"type\":\""+type.toString()+"\",\"data\":"+s+"}";
         }

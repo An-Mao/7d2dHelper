@@ -6,38 +6,59 @@ import nws.dev.$7d2d.config.RewardConfig;
 import nws.dev.$7d2d.config.RewardData;
 import nws.dev.$7d2d.config.UserConfig;
 import nws.dev.$7d2d.data.BotData;
+import nws.dev.$7d2d.data.ServerData;
 import nws.dev.$7d2d.data.Web;
 import nws.dev.$7d2d.helper.OtherHelper;
 import nws.dev.$7d2d.system._Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class BotNet {
-    private static final String rootUrl = "http://"+ Config.I.getDatas().botHost +"/";
-    private static Web.Bot Use = new Web.Bot();
+    public static final HashMap<String,BotNet> Servers = new HashMap<>();
 
-    public static boolean loginUser() {
-        String response = Net.sendGetData(rootUrl +"api/login?username="+Config.I.getDatas().botUsername+"&password="+Config.I.getDatas().botPassword);
+    private final ServerData serverData;
+
+    private final String rootUrl;
+    private final String loginUrl;
+    private final String pointUrl;
+    private final String giveItemUrl;
+    private final String localUrl;
+
+    private static Web.Bot Use = new Web.Bot();
+    public BotNet(ServerData serverData){
+        this.serverData = serverData;
+        this.rootUrl = "http://"+ serverData.botHost() +"/";
+        this.loginUrl = rootUrl +"api/login?username="+serverData.botUsername() +"&password="+serverData.botPassword();
+        this.pointUrl = rootUrl +"api/action_pointadd?key=";
+        this.giveItemUrl = rootUrl +"api/action_giveitem?key=";
+        this.localUrl = rootUrl + "api/localizations?key=";
+
+    }
+
+
+    public boolean loginUser() {
+        String response = Net.sendGetData(this.loginUrl);
         _Log.debug(response);
         Gson gson = new Gson();
         Use = gson.fromJson(response, Web.Bot.class);
         return Use != null && Use.result == 1;
     }
 
-    public static boolean send_point(String user, int count) {
-        String url = rootUrl +"api/action_pointadd?key="+ getToken() +"&p="+user+"&count="+count+"&isnotice=1";
+    public boolean sendPoint(String user, int count) {
+        String url = this.pointUrl + getToken() +"&p="+user+"&count="+count+"&isnotice=1";
         String response = Net.sendGetData(url);
         _Log.debug(response);
         return checkResult(response);
     }
-    public static boolean give_Item(String user, String name, int count, int quality) {
-        String url = rootUrl +"api/action_giveitem?key="+ getToken() +"&p="+user+"&name="+Net.urlEncode(name)+"&count="+count+"&quality="+quality;
+    public boolean giveItem(String user, String name, int count, int quality) {
+        String url = this.giveItemUrl+ getToken() +"&p="+user+"&name="+Net.urlEncode(name)+"&count="+count+"&quality="+quality;
         String response = Net.sendGetData(url);
         _Log.debug(response);
         return checkResult(response);
     }
-    public static boolean killPlayer(String user) {
+    public boolean killPlayer(String user) {
         String url = rootUrl +"api/action_kill?key="+ getToken() +"&p="+user;
         String response = Net.sendGetData(url);
         _Log.debug(response);
@@ -46,11 +67,11 @@ public class BotNet {
 
 
 
-    public static String getItemName(String itemId) {
+    public String getItemName(String itemId) {
         int page = 1,limit = 10;
         String name = "";
         while (name.isEmpty()) {
-            String url = rootUrl + "api/localizations?key=" + getToken() + "&page=" + page + "&limit=" + limit + "&keyword=" + Net.urlEncode(itemId);
+            String url = this.localUrl + getToken() + "&page=" + page + "&limit=" + limit + "&keyword=" + Net.urlEncode(itemId);
             String response = Net.sendGetData(url);
             _Log.debug(response);
             Gson gson = new Gson();
@@ -66,34 +87,34 @@ public class BotNet {
     }
 
 
-    public static String getToken() {
+    public String getToken() {
         if (Use == null || Use.session_key == null || Use.session_key.isEmpty() || !checkLogin()) {
             _Log.warn("session_key失效，尝试重新登录");
             if (!loginUser()) return "";
         }
         return Use.session_key;
     }
-    public static boolean checkLogin() {
+    public boolean checkLogin() {
         String response = Net.sendGetData(rootUrl +"api/checksession?key="+ Use.session_key);
         _Log.debug(response);
         return checkResult(response);
     }
 
-    public static BotData.UserInfo getUserByName(String name) {
+    public BotData.UserInfo getUserByName(String name) {
         List<BotData.UserInfo> list = getUserList();
         for (BotData.UserInfo info : list) {
             if (info.playername().equals(name)) return info;
         }
         return null;
     }
-    public static BotData.UserInfo getUserBySteamID(String name) {
+    public BotData.UserInfo getUserBySteamID(String name) {
         List<BotData.UserInfo> list = getUserList();
         for (BotData.UserInfo info : list) {
             if (info.platformid().equals(name)) return info;
         }
         return null;
     }
-    public static List<BotData.UserInfo> getUserList() {
+    public List<BotData.UserInfo> getUserList() {
         int page = 1,limit = 50;
         boolean isAll = false;
         List<BotData.UserInfo> list = new ArrayList<>();
@@ -109,21 +130,21 @@ public class BotNet {
         }
         return list;
     }
-    public static BotData.PlayerInfo getOnlinePlayerByName(String name) {
+    public BotData.PlayerInfo getOnlinePlayerByName(String name) {
         List<BotData.PlayerInfo> list = getOnlinePlayerList();
         for (BotData.PlayerInfo info : list) {
             if (info.playername().equals(name)) return info;
         }
         return null;
     }
-    public static BotData.PlayerInfo getOnlinePlayerBySteamID(String steamid) {
+    public BotData.PlayerInfo getOnlinePlayerBySteamID(String steamid) {
         List<BotData.PlayerInfo> list = getOnlinePlayerList();
         for (BotData.PlayerInfo info : list) {
             if (info.platformid().equals(steamid)) return info;
         }
         return null;
     }
-    public static List<BotData.PlayerInfo> getOnlinePlayerList() {
+    public List<BotData.PlayerInfo> getOnlinePlayerList() {
         int page = 1,limit = 15;
         List<BotData.PlayerInfo> list = new ArrayList<>();
         while (true) {
@@ -141,13 +162,13 @@ public class BotNet {
 
 
 
-    public static boolean sendPrivateMsg(String user, String msg) {
+    public boolean sendPrivateMsg(String user, String msg) {
         String url = rootUrl +"api/action_sayprivate?key="+getToken()+"&p="+user+"&name="+Config.I.getServerName()+"&text="+Net.urlEncode(msg);
         String response = Net.sendGetData(url);
         _Log.debug(response);
         return checkResult(response);
     }
-    public static boolean sendPublicMsg(String msg) {
+    public boolean sendPublicMsg(String msg) {
         String url = rootUrl +"api/action_saypublic?key="+getToken()+"&name="+Config.I.getServerName()+"&text="+Net.urlEncode(msg);
         String response = Net.sendGetData(url);
         _Log.debug(response);
@@ -165,15 +186,15 @@ public class BotNet {
 
 
 
-    public static boolean checkResult(String res) {
+    public boolean checkResult(String res) {
         Gson gson = new Gson();
         return checkResult(gson.fromJson(res, Web.Result.class));
     }
-    public static boolean checkResult(Web.Result res) {
+    public boolean checkResult(Web.Result res) {
         return res != null && res.result == 1;
     }
 
-    public static String giveReward(UserConfig user, String pack) {
+    public String giveReward(UserConfig user, String pack) {
         RewardData rewardData = RewardConfig.I.getReward(pack);
         return switch (rewardData.type) {
             case 0: yield addPoint(user, pack, rewardData.count);
@@ -183,24 +204,24 @@ public class BotNet {
         };
     }
 
-    private static String dropPoint(UserConfig user, String pack, int count) {
-        if (send_point(user.getSteamID(),-count)) {
+    private String dropPoint(UserConfig user, String pack, int count) {
+        if (sendPoint(user.getSteamID(),-count)) {
             user.setReward(pack);
             return "您成功领取礼包，失去"+count+"积分";
         }
         else return "领取失败";
     }
 
-    private static String giveItem(UserConfig user, String pack, String name, int count, int quality) {
-        if (give_Item(user.getSteamID(), name, count, quality)) {
+    private String giveItem(UserConfig user, String pack, String name, int count, int quality) {
+        if (giveItem(user.getSteamID(), name, count, quality)) {
             user.setReward(pack);
             return "您成功领取礼包，获得"+quality+"品的【"+ OtherHelper.removeColorCodes(getItemName(name))+"】×"+count;
         }
         else return "领取失败";
     }
 
-    private static String addPoint(UserConfig user, String pack, int count) {
-        if (send_point(user.getSteamID(),count)) {
+    private String addPoint(UserConfig user, String pack, int count) {
+        if (sendPoint(user.getSteamID(),count)) {
             user.setReward(pack);
             return "您成功领取礼包，获得"+count+"积分";
         }
@@ -208,7 +229,7 @@ public class BotNet {
     }
 
 
-    public static BotData.GameState getGameState() {
+    public BotData.GameState getGameState() {
         String url = rootUrl +"api/gamestats?key="+getToken();
         String response = Net.sendGetData(url);
         _Log.debug(response);

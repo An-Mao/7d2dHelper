@@ -1,101 +1,74 @@
 package nws.dev.$7d2d;
 
-import com.google.gson.Gson;
+import nws.dev.$7d2d.command.QQUsualCommand;
 import nws.dev.$7d2d.command.ServerCommand;
-import nws.dev.$7d2d.config.*;
-import nws.dev.$7d2d.data.BotData;
-import nws.dev.$7d2d.data.PlayerInfoData;
-import nws.dev.$7d2d.data.QQData;
+import nws.dev.$7d2d.config.ACItemsConfig;
+import nws.dev.$7d2d.config.ACItemsData;
+import nws.dev.$7d2d.config.Config;
+import nws.dev.$7d2d.config.DrawConfig;
 import nws.dev.$7d2d.event.Events;
-import nws.dev.$7d2d.helper.QQHelper;
-import nws.dev.$7d2d.net.*;
+import nws.dev.$7d2d.net.ACNet;
+import nws.dev.$7d2d.net.Heartbeat;
+import nws.dev.$7d2d.net.QQNet;
 import nws.dev.$7d2d.system._Log;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
-    public static final String Version = "25.03.2300";
-    public static void main(String[] args) throws IOException {
-        init();
+    private static final Thread inputThread = runInputThread();
+    private static boolean isClosing = false;
+    static {
+        System.setProperty("java.awt.headless", "true");
+        // 添加关闭钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            _Log.info("========程序即将关闭========");
+            isClosing = true;
+            _Log.info("开始关闭事件线程");
+            Events.stop();
+            _Log.info("开始关闭心跳线程");
+            Heartbeat.stop();
+            _Log.info("开始关闭QQ消息接收服务");
+            QQNet.stop();
+            _Log.info("开始关闭控制台输入线程");
+            inputThread.interrupt(); // 中断 inputThread
+            try {
+                inputThread.join(); // 等待 inputThread 完成
+            } catch (InterruptedException e) {
+                _Log.error("输入线程正在运行，等待其结束： " + e.getMessage());
+                Thread.currentThread().interrupt(); // Restore interrupted status
+            }
+            _Log.info("开始释放资源");
+            DrawConfig.I.dispose();
+            _Log.info("Done.");
+        }));
     }
-    private static void test(){
-        /*
-        String test = """
-            {"self_id":1977970939,"user_id":751898988,"time":1741425113,"message_id":1407333403,"message_seq":58072,"message_type":"group","sender":{"user_id":751898988,"nickname":"猫","card":"","role":"owner","title":""},"raw_message":"签到","font":14,"sub_type":"normal","message":[{"type":"text","data":{"text":"签到"}}],"message_format":"array","post_type":"message","group_id":164447436}
-            """;
-
-         */
-        //{"self_id":1977970939,"user_id":751898988,"time":1741425113,"message_id":1407333403,"message_seq":58072,"message_type":"group","sender":{"user_id":751898988,"nickname":"猫","card":"","role":"owner","title":""},"raw_message":"签到[CQ:at,qq=1977970939,name=nekowq]","font":14,"sub_type":"normal","message":[{"type":"text","data":{"text":"签到"}},{"type":"at","data":{"qq":"1977970939","name":"nekowq"}}],"message_format":"array","post_type":"message","group_id":164447436}
-        /*
-        Gson gson = new Gson();
-        QQData.Message message = gson.fromJson(test, QQData.Message.class);
-        _Log.info(String.valueOf(QQNet.usualMsg(message)));
-
-         */
-        //"76561198405695513"
-        PlayerInfoData playerInfoData = KitNet.getBagItems("76561198405695513");
-        _Log.info(playerInfoData.entityid());
-        _Log.info("数量："+ playerInfoData.bag().size());
-
-
-    }
-    public static void init() throws IOException{
-        _Log.info("当前版本："+Version);
-        _Log.info("开始初始化配置文件");
-        _Log.info("签到奖励",DailyRewardsConfig.I.getDatas().toString());
-        _Log.info("问答",QA.I.getDatas().keySet().toString());
-        loginUser();
-        Heartbeat.start();
-        Events.event.start();
-        _Log.info( "AC登录状态："+ACNet.I.isLogin());
-        QQNet.listen();
-        _Log.info("开始启动对"+ Config.I.getDatas().listenPort +"端口消息的监听");
-        Thread inputThread = runInputThread();
+    public static void main(String[] args) {
+        //初始化基础数据
+        DataTable.init();
+        $7DTD.init();
+        //TestCode.test();
         inputThread.start();
-
-        //_Log.info(BotNet.getItemName("自动入包模组"));
-        //KitNet.getBan("76561198193776909");
-        //test();
-    }
-
-    private static void loginUser(){
-        _Log.info("开始登录Ket");
-        if (KitNet.loginUser()){
-            _Log.info("Ket登录成功：accessToken="+ KitNet.getToken());
-        }else {
-            _Log.error("Ket登录失败");
-        }
-        _Log.info("开始登录Bot");
-        if (BotNet.loginUser()){
-            _Log.info("Bot登录成功：session_key="+ BotNet.getToken());
-        }else {
-            _Log.error("Bot登录失败");
-        }
     }
     private static Thread runInputThread() {
         Thread inputThread = new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
-            while (true) {
+            while (!isClosing) {
                 if (scanner.hasNextLine()) {
                     String userInput = scanner.nextLine();
-                    switch (userInput){
-                        case "运行kit" -> QQNet.runKitExe();
-                        case "登录kit" -> loginUser();
+                    switch (userInput) {
+                        case "运行kit" -> QQUsualCommand.runKitExe();
+                        case "登录kit" -> $7DTD.loginUser();
                         case "清理服务器" -> ServerCommand.restart();
                         case "重启服务器" -> {
-                            if (QQNet.restartThread.isAlive()){
+                            if (QQUsualCommand.restartThread.isAlive()) {
                                 _Log.warn("重启进程运行中，请勿多次发起");
-                            }else {
-                                if (System.currentTimeMillis() - QQNet.wt < 60000) {
-                                    _Log.warn( "即将完全重启服务器");
-                                    QQNet.restartThread.start();
-                                }else {
-                                    _Log.warn( "如果您想完全重启服务器，请在60秒内再发一次此指令");
-                                    QQNet.wt = System.currentTimeMillis();
+                            } else {
+                                if (System.currentTimeMillis() - QQUsualCommand.wt < 60000) {
+                                    _Log.warn("即将完全重启服务器");
+                                    QQUsualCommand.restartThread.start();
+                                } else {
+                                    _Log.warn("如果您想完全重启服务器，请在60秒内再发一次此指令");
+                                    QQUsualCommand.wt = System.currentTimeMillis();
                                 }
                             }
                         }

@@ -8,9 +8,7 @@ import nws.dev.$7d2d.data.PostData;
 import nws.dev.$7d2d.data.Web;
 import nws.dev.$7d2d.system._Log;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 public class KitNet {

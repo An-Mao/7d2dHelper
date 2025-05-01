@@ -8,7 +8,6 @@ import nws.dev.$7d2d.system._Log;
 
 public class QQMsg {
     public static boolean isSignedInPlus(QQData.Message message){
-        //签到[CQ:at,steamid=1977970939,name=nekowq]
         if (message.message.size() == 2) {
             QQData.Message.Msg msg = message.message.get(0);
             if (msg.type().equals("text") && msg.data().containsKey("text") && msg.data().get("text").equals("签到")) {

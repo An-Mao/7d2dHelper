@@ -1,10 +1,14 @@
 package nws.dev.$7d2d.system;
 
+import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.config.Config;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,11 +26,15 @@ public class _Log {
     public static final String WHITE = "\u001B[37m";
 
     private static final BlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
-    private static final String logFile = "last.log";
+    private static String logFile;
+
+
 
     private static final boolean ENABLE_COLOR;
 
     static {
+        SetLogFileName();
+
         // 初始化是否支持 ANSI 颜色
         ENABLE_COLOR = Config.I.getDatas().logColor && isAnsiSupported();
 
@@ -45,6 +53,13 @@ public class _Log {
         });
         logThread.setDaemon(true); // 守护线程
         logThread.start();
+    }
+
+    public static void SetLogFileName(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd-HH-mm");
+        String formattedDateTime = now.format(formatter);
+        logFile = DataTable.LogDir + "/"+formattedDateTime+".log";
     }
 
     public static void info(String... msg) {

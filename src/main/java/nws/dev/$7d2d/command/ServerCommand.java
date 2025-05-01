@@ -25,8 +25,8 @@ public class ServerCommand {
 
 
     public static void bind(KitData.Msg msg){
-        if (QQNet.bindUser.containsKey(msg.p())){
-            String qq = QQNet.bindUser.get(msg.p());
+        if (QQUsualCommand.bindUser.containsKey(msg.p())){
+            String qq = QQUsualCommand.bindUser.get(msg.p());
             UserConfig config = new UserConfig(qq);
             config.setBindDone(msg.p());
             _Log.info("玩家 "+msg.pn()+" 绑定成功,QQ号为 "+qq);
@@ -103,6 +103,7 @@ public class ServerCommand {
         voteCheck();
 
     }
+
 
 
     public static String getServerInfo(){

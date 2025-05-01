@@ -6,8 +6,10 @@
 
     <groupId>nws.dev</groupId>
     <artifactId>7d2d</artifactId>
-    <version>25.03.2300</version>
-
+    <version>25.04.1800</version>
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+    </build>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

@@ -19,6 +19,7 @@ public class Urls {
 
 
     public static String qqSendGroupMsg;
+    public static String qqSendPrivateMsg;
     static {
         reload();
     }
@@ -31,6 +32,7 @@ public class Urls {
         gsListUrl = "http://"+ Config.I.getDatas().kitHost +"/cgi/gs_list";
 
         qqSendGroupMsg = "http://"+ Config.I.getDatas().qqHost+"/send_group_msg";
+        qqSendPrivateMsg = "http://"+ Config.I.getDatas().qqHost+"/send_private_msg";
 
         botChatUrl = "http://"+ Config.I.getDatas().botHost +"/api/livechat_pull?key=";//+id
         botChatHistoryUrl = "http://"+ Config.I.getDatas().botHost +"/api/livechat_history?target=group_0&key=";
