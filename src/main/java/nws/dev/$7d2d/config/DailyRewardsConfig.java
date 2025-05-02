@@ -1,17 +1,13 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DailyRewardsConfig extends _JsonConfig<List<DailyRewardsConfig.DailyRewards>> {
-    private static final String filePath = DataTable.Dir + "/DailyRewards.json";
-    public static final DailyRewardsConfig I = new DailyRewardsConfig();
-
-    public DailyRewardsConfig() {
+    public DailyRewardsConfig(String filePath) {
         super(filePath, """
                 [
                     {

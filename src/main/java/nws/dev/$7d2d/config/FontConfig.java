@@ -1,14 +1,10 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 
 public class FontConfig extends _JsonConfig<FontConfig.FontData> {
-    private static final String file = DataTable.FontDir + "/font.json";
-    public static final FontConfig I = new FontConfig();
-
-    public FontConfig() {
+    public FontConfig(String file) {
         super(file, """
                 {
                     "custom": false,

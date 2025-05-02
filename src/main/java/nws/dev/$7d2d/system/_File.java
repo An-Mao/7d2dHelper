@@ -33,7 +33,7 @@ public class _File {
         }
         return true;
     }
-    public static List<File> findFiles(File folder) {
+    public static List<File> findFiles(File folder,boolean recursion) {
         List<File> allFiles = new ArrayList<>();
         if (!folder.isDirectory()) {
             return allFiles;
@@ -43,8 +43,8 @@ public class _File {
             for (File file : files) {
                 if (file.isFile() && file.getName().toLowerCase().endsWith(".json")) {
                     allFiles.add(file);
-                } else if (file.isDirectory()) {
-                    allFiles.addAll(findFiles(file));
+                } else if (file.isDirectory() && recursion) {
+                    allFiles.addAll(findFiles(file, true));
                 }
             }
         }

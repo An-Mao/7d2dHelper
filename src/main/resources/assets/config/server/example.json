@@ -1,6 +1,6 @@
 {
   "qqGroup":["123456","1234567"],
-  "serverName":"Server",
+  "serverName":"example",
   "kitExePath":"D:\\somdir\\kit.exe",
   "singInMaxPoint":10000,
   "adminToken": "123456",

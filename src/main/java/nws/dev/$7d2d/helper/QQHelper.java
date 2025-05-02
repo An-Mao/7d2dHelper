@@ -1,9 +1,9 @@
 package nws.dev.$7d2d.helper;
 
-import nws.dev.$7d2d.config.Config;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.net.Net;
 import nws.dev.$7d2d.net.Urls;
+import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
 import java.util.Arrays;
@@ -62,8 +62,8 @@ public class QQHelper {
     public static void easySendGroupMsg(String group, String msg){
         sendGroupMsg(group, QQData.Msg.create(QQData.MsgType.Text, "text", msg));
     }
-    public static void easySendGroupReplyMsg(String group,String id, String msg){
-        switch (Config.I.getDatas().qqMsgType){
+    public static void easySendGroupReplyMsg(ServerCore serverCore, String group, String id, String msg){
+        switch (serverCore.serverData.qqMsgType()){
             case 1 -> sendGroupMsg(group,QQData.Msg.create(QQData.MsgType.Reply, "id", id), QQData.Msg.create(QQData.MsgType.Text, "text", msg));
             case 2 -> easySendGroupMsg(group,msg);
         }
@@ -75,9 +75,9 @@ public class QQHelper {
         _Log.debug(Urls.qqSendPrivateMsg);
         sendPrivateMsg(qq, QQData.Msg.create(QQData.MsgType.Text, "text", msg));
     }
-    public static void easySendReplyMsg(String qq,String id, String msg){
-        _Log.debug(String.valueOf(Config.I.getDatas().qqMsgType));
-        switch (Config.I.getDatas().qqMsgType){
+    public static void easySendReplyMsg(ServerCore serverCore, String qq,String id, String msg){
+        _Log.debug(String.valueOf(serverCore.serverData.qqMsgType()));
+        switch (serverCore.serverData.qqMsgType()){
             case 1 -> {
                 _Log.debug("尝试发送回复消息 qq:" + qq + " id:" + id + " msg:" + msg);
                 sendPrivateMsg(qq,QQData.Msg.create(QQData.MsgType.Reply, "id", id), QQData.Msg.create(QQData.MsgType.Text, "text", msg));

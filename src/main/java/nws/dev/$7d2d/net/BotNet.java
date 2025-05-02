@@ -1,23 +1,20 @@
 package nws.dev.$7d2d.net;
 
 import com.google.gson.Gson;
-import nws.dev.$7d2d.config.Config;
-import nws.dev.$7d2d.config.RewardConfig;
-import nws.dev.$7d2d.config.RewardData;
 import nws.dev.$7d2d.config.UserConfig;
 import nws.dev.$7d2d.data.BotData;
+import nws.dev.$7d2d.data.RewardData;
 import nws.dev.$7d2d.data.ServerData;
 import nws.dev.$7d2d.data.Web;
 import nws.dev.$7d2d.helper.OtherHelper;
+import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class BotNet {
-    public static final HashMap<String,BotNet> Servers = new HashMap<>();
-
+    private final ServerCore serverCore;
     private final ServerData serverData;
 
     private final String rootUrl;
@@ -27,8 +24,9 @@ public class BotNet {
     private final String localUrl;
 
     private static Web.Bot Use = new Web.Bot();
-    public BotNet(ServerData serverData){
-        this.serverData = serverData;
+    public BotNet(ServerCore serverCore){
+        this.serverCore = serverCore;
+        this.serverData = serverCore.serverData;
         this.rootUrl = "http://"+ serverData.botHost() +"/";
         this.loginUrl = rootUrl +"api/login?username="+serverData.botUsername() +"&password="+serverData.botPassword();
         this.pointUrl = rootUrl +"api/action_pointadd?key=";
@@ -40,7 +38,7 @@ public class BotNet {
 
     public boolean loginUser() {
         String response = Net.sendGetData(this.loginUrl);
-        _Log.debug(response);
+        _Log.debug("bot 登录结果："+response);
         Gson gson = new Gson();
         Use = gson.fromJson(response, Web.Bot.class);
         return Use != null && Use.result == 1;
@@ -163,13 +161,13 @@ public class BotNet {
 
 
     public boolean sendPrivateMsg(String user, String msg) {
-        String url = rootUrl +"api/action_sayprivate?key="+getToken()+"&p="+user+"&name="+Config.I.getServerName()+"&text="+Net.urlEncode(msg);
+        String url = rootUrl +"api/action_sayprivate?key="+getToken()+"&p="+user+"&name="+serverData.serverName()+"&text="+Net.urlEncode(msg);
         String response = Net.sendGetData(url);
         _Log.debug(response);
         return checkResult(response);
     }
     public boolean sendPublicMsg(String msg) {
-        String url = rootUrl +"api/action_saypublic?key="+getToken()+"&name="+Config.I.getServerName()+"&text="+Net.urlEncode(msg);
+        String url = rootUrl +"api/action_saypublic?key="+getToken()+"&name="+serverData.serverName()+"&text="+Net.urlEncode(msg);
         String response = Net.sendGetData(url);
         _Log.debug(response);
         return checkResult(response);
@@ -195,7 +193,7 @@ public class BotNet {
     }
 
     public String giveReward(UserConfig user, String pack) {
-        RewardData rewardData = RewardConfig.I.getReward(pack);
+        RewardData rewardData = serverCore.rewardConfig.getReward(pack);
         return switch (rewardData.type) {
             case 0: yield addPoint(user, pack, rewardData.count);
             case 1: yield giveItem(user, pack, rewardData.name, rewardData.count, rewardData.quality);

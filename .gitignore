@@ -32,3 +32,5 @@ bin/
 /target/
 /config/
 /cache/
+/data/
+/lang/

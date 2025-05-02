@@ -1,14 +1,13 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 
 import java.util.HashMap;
 
 public class EventsConfig extends _JsonConfig<HashMap<String, String>> {
-    private static final String file = DataTable.Dir + "/events.json";
-    private static final String D = """
+    public EventsConfig(String file) {
+        super(file,"""
                 {
                     "08:30": "迷宫即将在30分钟后开启",
                     "08:50": "迷宫即将在10分钟后开启",
@@ -51,10 +50,7 @@ public class EventsConfig extends _JsonConfig<HashMap<String, String>> {
                     "21:20": "载具竞速即将在10分钟后开启",
                     "21:30": "载具竞速已开启"
                 }
-                """;
-    public static final EventsConfig I = new EventsConfig(file,D);
-    public EventsConfig(String file,String d) {
-        super(file,d , new TypeToken<>() {},false);
+                """ , new TypeToken<>() {},false);
     }
 
     @Override

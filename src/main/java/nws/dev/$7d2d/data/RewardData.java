@@ -1,4 +1,4 @@
-package nws.dev.$7d2d.config;
+package nws.dev.$7d2d.data;
 
 public class RewardData {
     /**

@@ -1,5 +1,6 @@
 package nws.dev.$7d2d.config;
 
+import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,14 +21,16 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GameInfo {
-    public static final GameInfo I = new GameInfo(Config.I.getDatas().GameDir);
+    //public static final GameInfo I = new GameInfo(Config.I.getDatas().GameDir);
+    private final ServerCore serverCore;
     private final String gameDir;
     private final ArrayList<String> ModFiles = new ArrayList<>();
     private final HashMap<String,Item> items = new HashMap<>();
     private final HashMap<String,Recipe> recipes = new HashMap<>();
     private final HashMap<String,String> language = new HashMap<>();
-    public GameInfo(String filePath) {
-        this.gameDir = filePath;
+    public GameInfo(ServerCore serverCore) {
+        this.serverCore = serverCore;
+        this.gameDir = serverCore.serverData.GameDir();
         this.ModFiles.add(this.gameDir + "/Data/");
         getSubdirectories().forEach(file -> this.ModFiles.add(file.getPath()));
         init();
@@ -71,8 +74,8 @@ public class GameInfo {
         StringBuilder s = new StringBuilder("-----查找结果-----");
         int[] c = {0};
 
-        GameInfo.I.getItems().forEach((k, v) -> {
-            String name = GameInfo.I.getLocalization(v.name());
+        getItems().forEach((k, v) -> {
+            String name = getLocalization(v.name());
             if (k.equalsIgnoreCase(itemName) || name.equalsIgnoreCase(itemName) || v.name.contains(itemName)){
                 c[0]++;
                 s.append("\\n").append(k).append("（").append(name).append("）");
@@ -203,7 +206,7 @@ public class GameInfo {
              */
         });
     }
-    public static List<String> oldparseCsvLine(String csvLine) {
+    public List<String> oldparseCsvLine(String csvLine) {
         List<String> parts = new ArrayList<>();
         boolean inQuotes = false;
         StringBuilder currentPart = new StringBuilder();
@@ -225,7 +228,7 @@ public class GameInfo {
         parts.add(currentPart.toString());
         return parts;
     }
-    public static List<String> parseCsvLine(String csvLine) {
+    public List<String> parseCsvLine(String csvLine) {
         List<String> parts = new ArrayList<>();
         boolean inQuotes = false;
         StringBuilder currentPart = new StringBuilder();
@@ -277,7 +280,7 @@ public class GameInfo {
             StringBuilder att = new StringBuilder();
             for (int i = 0; i < effectGroupNodes.getLength(); i++){
                 Element element = (Element) effectGroupNodes.item(i);
-                String a = ItemAttributeConfig.I.attributeToString(element);
+                String a = serverCore.itemAttributeConfig.attributeToString(element);
                 if (a.isEmpty())continue;
                 String en = element.getAttribute("name");
                 if (!att.isEmpty()) att.append("\\n");
@@ -299,12 +302,12 @@ public class GameInfo {
             loadRecipe(items2);
         });
     }
-    private static boolean isClear = false;
+    private boolean isClear = false;
     private void loadRecipe(List<Element> elements) {
-        boolean auto = AutoWhiteListConfig.I.isEnable();
+        boolean auto = this.serverCore.autoWhiteListConfig.isEnable();
         if (auto && !isClear) {
             isClear = true;
-            AutoWhiteList.I.clear();
+            this.serverCore.autoWhiteList.clear();
         }
         elements.forEach(item->{
             String name = item.getAttribute("name");
@@ -318,12 +321,12 @@ public class GameInfo {
                 items.put(property.getAttribute("name"),Integer.parseInt(property.getAttribute("count")));
             }
             Recipe recipe = new Recipe(name,name,count,craft_area,items);
-            if (auto) AutoWhiteListConfig.I.checkRecipe(recipe);
+            if (auto) serverCore.autoWhiteListConfig.checkRecipe(serverCore,recipe);
 
             //recipes.put(item.getAttribute("name"),recipe);
             recipes.put(name,recipe);
         });
-        if (auto) AutoWhiteList.I.saveAll();
+        if (auto) serverCore.autoWhiteList.saveAll();
     }
     public List<Element> getElementsFromXMLFile(String xmlFilePath, String xpathExpression) {
         List<Element> items = new ArrayList<>();

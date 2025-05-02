@@ -1,11 +1,5 @@
 package nws.dev.$7d2d;
 
-import nws.dev.$7d2d.config.DrawConfig;
-import nws.dev.$7d2d.config.GameInfo;
-import nws.dev.$7d2d.system._Log;
-
-import java.util.List;
-
 public class TestCode {
 
     public static void test() {

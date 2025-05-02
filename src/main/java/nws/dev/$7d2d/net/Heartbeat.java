@@ -1,80 +1,89 @@
 package nws.dev.$7d2d.net;
 
 import com.google.gson.Gson;
-import nws.dev.$7d2d.command.ServerCommand;
-import nws.dev.$7d2d.config.Config;
 import nws.dev.$7d2d.data.KitData;
+import nws.dev.$7d2d.data.ServerData;
+import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 import nws.dev.$7d2d.system._ThreadMonitor;
 
 public class Heartbeat {
-    private static boolean Start = false;
+    private final ServerCore serverCore;
+    private final ServerData serverData;
+    private final String chatUrl;
+    private final String chatSyncUrl;
 
+    private boolean Start = false;
+    private int msgId = -1;
+    public final _ThreadMonitor heart;
 
-    private static int msgId = -1;
+    public Heartbeat(ServerCore serverCore){
+        this.serverCore = serverCore;
+        this.serverData = serverCore.serverData;
+        this.chatUrl = "http://"+serverData.kitHost() +"/api/chat?admintoken="+serverData.adminToken();
+        this.chatSyncUrl = "http://"+serverData.kitHost() +"/api/chat_sync?admintoken="+serverData.adminToken();
 
-
-    public static final _ThreadMonitor heart = new _ThreadMonitor(() -> {
-        _Log.info("开始监听服务器消息，心跳频率"+Config.I.getDatas().heartInterval+"ms");
-        int heartInterval = Config.I.getDatas().heartInterval;
-        while (Start) {
-            try {
-                Thread.sleep(heartInterval);
-                if (heartInterval != Config.I.getDatas().heartInterval) heartInterval = Config.I.getDatas().heartInterval;
-                if (msgId == -1) setMsgId();
-                KitData.GameMsg msg = getMsg(Urls.chatSyncUrl+"&count="+Config.I.getDatas().msgCount+"&firstLine="+msgId+"&timeout="+Config.I.getDatas().heartInterval);
-                if (msg != null) {
-                    if (checkMsgData(msg)) {
-                        for (KitData.Msg m : msg.list()) {
-                            switch (m.msg()) {
-                                case "帮助":
-                                    ServerCommand.help(m);
-                                    break;
-                                case "清理":
-                                    ServerCommand.voteClear(m);
-                                    break;
-                                case "绑定账号":
-                                    ServerCommand.bind(m);
-                                    break;
+        heart = new _ThreadMonitor(() -> {
+            _Log.info("开始监听服务器消息，心跳频率"+serverData.heartInterval()+"ms");
+            int heartInterval = serverData.heartInterval();
+            while (Start) {
+                try {
+                    Thread.sleep(heartInterval);
+                    if (heartInterval != serverData.heartInterval()) heartInterval = serverData.heartInterval();
+                    if (msgId == -1) setMsgId();
+                    KitData.GameMsg msg = getMsg(this.chatSyncUrl+"&count="+serverData.msgCount()+"&firstLine="+msgId+"&timeout="+serverData.heartInterval());
+                    if (msg != null) {
+                        if (checkMsgData(msg)) {
+                            for (KitData.Msg m : msg.list()) {
+                                switch (m.msg()) {
+                                    case "帮助":
+                                        serverCore.help(m);
+                                        break;
+                                    case "清理":
+                                        serverCore.voteClear(m);
+                                        break;
+                                    case "绑定账号":
+                                        serverCore.bind(m);
+                                        break;
+                                }
                             }
+                            setMsgId();
                         }
-                        setMsgId();
-                    }
-                }else {
-                    _Log.error("拉取服务器信息失败，10秒后重试");
-                    heartInterval = 10000;
+                    }else {
+                        _Log.error("拉取服务器信息失败，10秒后重试");
+                        heartInterval = 10000;
 
+                    }
+                } catch (InterruptedException e) {
+                    _Log.error("心跳异常",e.getMessage());
+                    break;
                 }
-            } catch (InterruptedException e) {
-                _Log.error("心跳异常",e.getMessage());
-                break;
             }
-        }
-    },10000);
-    public static boolean checkMsgData(KitData.GameMsg msg){
+        },10000);
+    }
+
+    public boolean checkMsgData(KitData.GameMsg msg){
         return msg != null && msg.result() == 1 && msg.list() != null && msg.list().length > 0;
     }
-    public static void setMsgId(){
-        KitData.GameMsg msg = getMsg(Urls.chatUrl+"&count=-1");
+    public void setMsgId(){
+        KitData.GameMsg msg = getMsg(this.chatUrl+"&count=-1");
         if (checkMsgData(msg)) msgId = msg.list()[0].id() + 1;
     }
-    public static KitData.GameMsg getMsg(String url) {
+    public KitData.GameMsg getMsg(String url) {
         String response = Net.sendGetData(url);
         _Log.debug(response);
         Gson gson = new Gson();
         return gson.fromJson(response, KitData.GameMsg.class);
     }
 
-    public static void start() {
-        if (Config.I.getDatas().enableKitHeartbeat) {
+    public void start() {
+        if (serverData.enableKitHeartbeat()) {
             _Log.info("心跳启动");
             Start = true;
             heart.start();
-        }else {
-            _Log.info("心跳已禁用");
-        }
+        }else _Log.info("心跳已禁用");
     }
-    public static void stop() {
+    public void stop() {
         Start = false;
     }
 

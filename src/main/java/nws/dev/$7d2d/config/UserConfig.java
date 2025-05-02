@@ -1,10 +1,10 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.data.PlayerInfoData;
 import nws.dev.$7d2d.data.UserData;
 import nws.dev.$7d2d.json._JsonConfig;
+import nws.dev.$7d2d.server.ServerCore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserConfig extends _JsonConfig<UserData> {
     public UserConfig(String qq) {
-        super(DataTable.UserDir + "/" + qq + ".json", """
+        super(qq, """
                 {
                     "userid":"",
                     "platformid":"",
@@ -64,17 +64,17 @@ public class UserConfig extends _JsonConfig<UserData> {
         return getDatas().recordItemLimit;
     }
 
-    public List<PlayerInfoData.ItemData> getRecordItemMap() {
-        return getRecordItem().getDatas();
+    public List<PlayerInfoData.ItemData> getRecordItemMap(ServerCore serverCore) {
+        return getRecordItem(serverCore).getDatas();
     }
-    public RecordItem getRecordItem() {
-        return new RecordItem(getSteamID());
+    public RecordItem getRecordItem(ServerCore serverCore) {
+        return new RecordItem(serverCore,getSteamID());
     }
 
     public static class RecordItem extends _JsonConfig<List<PlayerInfoData.ItemData>>{
 
-        public RecordItem(String steamID) {
-            super(DataTable.UserItemDir + "/" + steamID + ".json", "", new TypeToken<>() {},false);
+        public RecordItem(ServerCore serverCore,String steamID) {
+            super(serverCore.userItemDir + "/" + steamID + ".json", "", new TypeToken<>() {},false);
         }
         public List<PlayerInfoData.ItemData> getDatas() {
             if (this.datas == null) this.datas = new ArrayList<>();

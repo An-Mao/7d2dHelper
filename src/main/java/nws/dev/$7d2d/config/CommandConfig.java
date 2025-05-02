@@ -1,15 +1,12 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 
 import java.util.HashMap;
 
 public class CommandConfig extends _JsonConfig<HashMap<String, Boolean>> {
-    private static final String filePath = DataTable.Dir + "/commands.json";
-    public static final CommandConfig I = new CommandConfig();
-    public CommandConfig() {
+    public CommandConfig(String filePath) {
         super(filePath, """
                 {
                     "help": true,
@@ -40,6 +37,13 @@ public class CommandConfig extends _JsonConfig<HashMap<String, Boolean>> {
                 }
                 """, new TypeToken<>(){});
     }
+
+    @Override
+    public HashMap<String, Boolean> getDatas() {
+        if (this.datas == null) this.datas = new HashMap<>();
+        return super.getDatas();
+    }
+
     public boolean isEnable(String command){
         return !this.getDatas().getOrDefault(command,false);
     }

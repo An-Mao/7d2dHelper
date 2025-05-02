@@ -1,17 +1,16 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 
 import java.time.LocalTime;
 import java.util.*;
 
 public class EventListConfig extends _JsonConfig<HashMap<String, String>> {
-    private static final String filePath = DataTable.Dir + "/eventList.json";
-    public static EventListConfig I = new EventListConfig();
+    //private static final String filePath = DataTable.Dir + "/eventList.json";
+    //public static EventListConfig I = new EventListConfig();
     private boolean n;
-    public EventListConfig() {
+    public EventListConfig(String filePath) {
         super(filePath, """
                 {
                     "09:00": "迷宫",

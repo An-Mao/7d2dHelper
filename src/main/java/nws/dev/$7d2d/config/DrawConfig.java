@@ -1,7 +1,6 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 import nws.dev.$7d2d.system._Image;
 import nws.dev.$7d2d.system._Log;
@@ -17,18 +16,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
-    private static final String filePath = DataTable.Dir + "/draw.json";
     private static final Pattern COLOR_CODE_PATTERN = Pattern.compile("\\[([0-9A-Fa-f]{6})\\]");
     private static final List<String> colorText=List.of(
             "0","1","2","3","4","5","6","7","8","9",
             "a","b","c","d","e","f");
 
-    public static final DrawConfig I = new DrawConfig();
+    //public static final DrawConfig I = new DrawConfig();
     private BufferedImage backgroundImage;
     private final BufferedImage bufferedImage;
     private final Graphics graphics;
     private final FontMetrics fontMetrics;
-    public DrawConfig() {
+    public DrawConfig(String filePath) {
         super(filePath, """
                 {
                     "width": 256,
@@ -198,7 +196,7 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
         }
         else return List.of(text);
     }
-    public _Image createImage(List<String> texts) {
+    public _Image createImage(FontConfig fontConfig,List<String> texts) {
         List<String> newTexts = new ArrayList<>();
         texts.forEach(s -> {
             if (!s.isEmpty()){
@@ -208,7 +206,7 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
             }
         });
         _Log.debug(newTexts.toString());
-        int height = newTexts.size() * (int)(FontConfig.I.getLineHeight()+ 2f) + getDatas().top *2;
+        int height = newTexts.size() * (int)(fontConfig.getLineHeight()+ 2f) + getDatas().top *2;
         _Image image = new _Image(getDatas().width(), height, getDatas().scaleFactor(), Configs.font);
         if (getDatas().backgroundType() == 0) {
             image.drawImage(getBackgroundImage(), 0, 0);
@@ -218,11 +216,11 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
             image.drawRect(0, 0, image.getWidth(), height, Color.decode(getDatas().backgroundColor()));
             image.drawImage(getBackgroundImage(), 0, 0);
         }
-        int[] y = {getDatas().top + (int)FontConfig.I.getLineHeight()};
+        int[] y = {getDatas().top + (int)fontConfig.getLineHeight()};
         Color color = Color.decode(getDatas().textColor());
         newTexts.forEach(text -> {
             image.drawText(text,getDatas().left(), y[0], color);
-            y[0] += (int)FontConfig.I.getLineHeight() + 2;
+            y[0] += (int)fontConfig.getLineHeight() + 2;
         });
         return image;
     }

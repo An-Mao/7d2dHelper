@@ -1,0 +1,41 @@
+package nws.dev.$7d2d.command.arg;
+
+import nws.dev.$7d2d.command.Command;
+import nws.dev.$7d2d.command.CommandType;
+import nws.dev.$7d2d.command.QQExCommand;
+import nws.dev.$7d2d.config.UserUaualConfig;
+import nws.dev.$7d2d.data.Permission;
+import nws.dev.$7d2d.data.QQData;
+import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.$7d2d.system._Log;
+
+@Command(name = "绑定服务器",permission = Permission.User,type = CommandType.Private)
+public class BindServerCommand extends QQExCommand {
+    public BindServerCommand(QQData.Message message, ServerCore serverCore) {
+        super("bindServer", message, serverCore);
+    }
+
+    @Override
+    public boolean runCommand() {
+            if (isGroup && isEnableGroup())return false;
+            if (this.rawArg.isEmpty() || !ServerCore.LIST.containsKey(this.rawArg)) {
+                sendMsg("指定服务器名称不存在，请重试");
+                return true;
+            }
+            UserUaualConfig userUaualConfig = new UserUaualConfig(this.qq);
+            userUaualConfig.getDatas().setPrivateServer(this.rawArg);
+            userUaualConfig.save();
+            sendMsg("绑定成功");
+            return true;
+    }
+
+    @Override
+    public boolean groupMsg() {
+        return false;
+    }
+
+    @Override
+    public boolean privateMsg() {
+        return false;
+    }
+}

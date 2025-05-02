@@ -1,19 +1,16 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
+import nws.dev.$7d2d.data.ACItemsData;
 import nws.dev.$7d2d.json._JsonConfig;
-import nws.dev.$7d2d.system._Log;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ACItemsConfig extends _JsonConfig<LinkedHashMap<String, ACItemsData>> {
-    private static final String filePath = DataTable.Dir + "/acItems.json";
-    public static final ACItemsConfig I = new ACItemsConfig();
     private final List<String> allItems = new ArrayList<>();
-    public ACItemsConfig() {
+    public ACItemsConfig(String filePath) {
         super(filePath, """
                 {
                     "测试白名单":{

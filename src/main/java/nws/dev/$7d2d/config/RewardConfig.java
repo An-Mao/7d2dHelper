@@ -1,15 +1,13 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
+import nws.dev.$7d2d.data.RewardData;
 import nws.dev.$7d2d.json._JsonConfig;
 
 import java.util.HashMap;
 
 public class RewardConfig extends _JsonConfig<HashMap<String, RewardData>> {
-    private static final String filePath = DataTable.Dir + "/reward.json";
-    public static RewardConfig I = new RewardConfig();
-    public RewardConfig() {
+    public RewardConfig(String filePath) {
         super(filePath, """
                 {
                     "NewbiePack": {

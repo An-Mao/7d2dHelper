@@ -1,7 +1,6 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.json._JsonConfig;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -9,9 +8,7 @@ import org.w3c.dom.NodeList;
 import java.util.HashMap;
 
 public class ItemAttributeConfig extends _JsonConfig<HashMap<String,String>> {
-    private static final String filePath = DataTable.Dir + "/itemAttributes.json";
-    public static final ItemAttributeConfig I = new ItemAttributeConfig();
-    public ItemAttributeConfig() {
+    public ItemAttributeConfig(String filePath) {
         super(filePath, """
                 {
                     "AttacksPerMinute":"攻速",

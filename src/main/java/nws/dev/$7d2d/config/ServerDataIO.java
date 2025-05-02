@@ -7,7 +7,7 @@ import nws.dev.$7d2d.json._JsonConfig;
 
 public class ServerDataIO extends _JsonConfig<ServerData> {
     public ServerDataIO(String filePath) {
-        super(DataTable.ServerConfigDir + "/" + filePath, "", new TypeToken<>(){});
+        super(DataTable.ServerListDir + "/" + filePath, "", new TypeToken<>(){});
     }
 
 }

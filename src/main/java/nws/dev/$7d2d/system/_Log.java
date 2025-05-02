@@ -36,7 +36,7 @@ public class _Log {
         SetLogFileName();
 
         // 初始化是否支持 ANSI 颜色
-        ENABLE_COLOR = Config.I.getDatas().logColor && isAnsiSupported();
+        ENABLE_COLOR = Config.I.getDatas().logColor() && isAnsiSupported();
 
         // 启动日志写入线程
         Thread logThread = new Thread(() -> {
@@ -75,8 +75,25 @@ public class _Log {
     }
 
     public static void debug(String... msg) {
-        if (!Config.I.getDatas().isDebug) return;
-        log(ENABLE_COLOR ? CYAN : "", "Debug", msg);
+        if (!Config.I.getDatas().isDebug()) return;
+
+        // 获取调用栈信息
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+
+
+        // 找到调用 debug 方法的类名和方法名
+        String className = "UnknownClass";
+        String methodName = "UnknownMethod";
+        if (stackTraceElements.length >= 3) {
+            // stackTraceElements[0] 是 getStackTrace() 方法本身
+            // stackTraceElements[1] 是 debug() 方法本身
+            // stackTraceElements[2] 是调用 debug() 方法的方法
+            className = stackTraceElements[2].getClassName();
+            methodName = stackTraceElements[2].getMethodName();
+        }
+
+        // 输出包含类名的日志
+        log(ENABLE_COLOR ? CYAN : "", "Debug(" + className +":"+methodName+ ")", msg);
     }
 
     private static void log(String color, String level, String... msg) {

@@ -1,16 +1,13 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
+import nws.dev.$7d2d.data.ACItemsData;
 import nws.dev.$7d2d.json._JsonConfig;
-import nws.dev.$7d2d.system._Log;
 
 import java.util.HashMap;
 
-public class AutoWhiteList extends _JsonConfig<HashMap<String,ACItemsData>> {
-    private static final String filePath = DataTable.Dir + "/AutoWhiteList.json";
-    public static final AutoWhiteList I = new AutoWhiteList();
-    public AutoWhiteList() {
+public class AutoWhiteList extends _JsonConfig<HashMap<String, ACItemsData>> {
+    public AutoWhiteList(String filePath) {
         super(filePath, """
                 {
                     "testA":{

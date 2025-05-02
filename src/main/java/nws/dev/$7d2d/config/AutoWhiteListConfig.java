@@ -1,14 +1,12 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
-import nws.dev.$7d2d.DataTable;
+import nws.dev.$7d2d.data.ACItemsData;
 import nws.dev.$7d2d.json._JsonConfig;
-import nws.dev.$7d2d.system._Log;
+import nws.dev.$7d2d.server.ServerCore;
 
 public class AutoWhiteListConfig extends _JsonConfig<AutoWhiteListConfig.AutoWhiteListCD> {
-    private static final String filePath = DataTable.Dir + "/AutoWhiteListConfig.json";
-    public static final AutoWhiteListConfig I = new AutoWhiteListConfig();
-    public AutoWhiteListConfig() {
+    public AutoWhiteListConfig(String filePath) {
         super(filePath, """
                 {
                     "enable":true,
@@ -37,9 +35,9 @@ public class AutoWhiteListConfig extends _JsonConfig<AutoWhiteListConfig.AutoWhi
         return getDatas().whiteItem();
     }
 
-    public void checkRecipe(GameInfo.Recipe recipe){
+    public void checkRecipe(ServerCore serverCore, GameInfo.Recipe recipe){
         if (recipe.items().containsKey(getWhiteItem())){
-            if (ACItemsConfig.I.includes(recipe.name())) return;
+            if (serverCore.acItem.includes(recipe.name())) return;
             int[] pl = {recipe.items().size() * getDatas().itemPoint(),
                     recipe.items().size() * getDatas().itemLevel()
             };
@@ -50,7 +48,7 @@ public class AutoWhiteListConfig extends _JsonConfig<AutoWhiteListConfig.AutoWhi
                 if (s.equalsIgnoreCase(getDatas().pointItem())) pl[0] += integer * getDatas().pointItemMultiple();
             });
             ACItemsData data = new ACItemsData(new String[]{recipe.name()},pl[0],pl[1] ,getDatas().allNeed());
-            AutoWhiteList.I.push(recipe.name(),data);
+            serverCore.autoWhiteList.push(recipe.name(),data);
         }
     }
 
