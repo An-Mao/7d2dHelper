@@ -12,7 +12,7 @@ import nws.dev.$7d2d.system._Log;
 
 import java.util.List;
 
-@Command(name = "同意解封+",permission = Permission.User,type = CommandType.Group)
+@Command(name = "同意解封",permission = Permission.User,type = CommandType.Group,desc = "同意解封@QQ",priority = 990)
 public class AgreeUnbanCommand extends QQAtCommand {
     public AgreeUnbanCommand(QQData.Message message, ServerCore serverCore) {
         super("agreeUnban", message,serverCore);

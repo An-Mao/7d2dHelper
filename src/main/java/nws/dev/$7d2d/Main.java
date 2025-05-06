@@ -8,7 +8,7 @@ import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
 public class Main {
-    public static final String Version = "25.05.0200";
+    public static final String Version = "25.05.0601";
     static {
         System.setProperty("java.awt.headless", "true");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -31,7 +31,7 @@ public class Main {
         _Log.info("当前版本：" + Version);
         _Log.info("开始注册命令");
         CommandRegistryNew.registerCommands("nws.dev.$7d2d");
-        _Log.info("已注册【"+CommandRegistryNew.getCommandMap().size()+"】命令");
+        _Log.info("已注册【"+CommandRegistryNew.getCommands().size()+"】命令");
         _Log.info("开始初始化");
         Configs.init();
         $7DTD.init();

@@ -8,7 +8,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
-@Command(name = "查找白名单",permission = Permission.User,type = CommandType.Group)
+@Command(name = "查找白名单",permission = Permission.User,type = CommandType.Group,desc = "查找白名单 物品名称")
 public class FindWhiteCommand extends QQExCommand {
     public FindWhiteCommand(QQData.Message message, ServerCore serverCore) {
         super("findWhite", message,serverCore);

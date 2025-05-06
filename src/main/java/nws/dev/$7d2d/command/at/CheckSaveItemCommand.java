@@ -9,7 +9,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.OtherHelper;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "查看跟档物品+",permission = Permission.ServerAdmin,type = CommandType.Group)
+@Command(name = "查看跟档物品",permission = Permission.ServerAdmin,type = CommandType.Group,desc = "查看跟档物品@QQ",priority = 990)
 public class CheckSaveItemCommand extends QQAtCommand {
     public CheckSaveItemCommand(QQData.Message message, ServerCore serverCore) {
         super("checkSaveItem",message,serverCore);

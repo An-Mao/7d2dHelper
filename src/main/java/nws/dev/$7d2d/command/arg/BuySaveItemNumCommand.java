@@ -10,7 +10,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
-@Command(name = "购买跟档物品数量",permission = Permission.User,type = CommandType.Group)
+@Command(name = "购买跟档物品数量",permission = Permission.User,type = CommandType.Group,desc = "购买跟档物品数量 数量")
 public class BuySaveItemNumCommand extends QQExCommand {
     public BuySaveItemNumCommand(QQData.Message message, ServerCore serverCore) {
         super("buySaveItemNum", message,serverCore);

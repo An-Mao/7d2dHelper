@@ -10,7 +10,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
-@Command(name = "签到+",permission = Permission.User,type = CommandType.Group)
+@Command(name = "签到",permission = Permission.User,type = CommandType.Group,desc = "签到@QQ",priority = 990)
 public class SignCommand extends QQAtCommand {
     public SignCommand(QQData.Message message, ServerCore serverCore) {
         super("sign", message,serverCore);

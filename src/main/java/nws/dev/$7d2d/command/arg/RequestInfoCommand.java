@@ -9,7 +9,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
-@Command(name = "查信息",permission = Permission.User,type = CommandType.Group)
+@Command(name = "查信息",permission = Permission.User,type = CommandType.Group,desc = "查信息 玩家名称")
 public class RequestInfoCommand extends QQExCommand {
     public RequestInfoCommand(QQData.Message message, ServerCore serverCore) {
         super("requestInfo", message,serverCore);

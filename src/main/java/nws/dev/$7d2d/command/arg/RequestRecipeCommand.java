@@ -14,7 +14,7 @@ import nws.dev.$7d2d.system._Log;
 import java.io.File;
 import java.util.List;
 
-@Command(name = "查询配方",permission = Permission.User,type = CommandType.Group)
+@Command(name = "查询配方",permission = Permission.User,type = CommandType.Group,desc = "查询配方 物品名称")
 public class RequestRecipeCommand extends QQExCommand {
     public RequestRecipeCommand(QQData.Message message, ServerCore serverCore) {
         super("requestRecipe", message,serverCore);

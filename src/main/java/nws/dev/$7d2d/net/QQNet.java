@@ -20,12 +20,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.PriorityQueue;
 
 public class QQNet {
     private static HttpServer server = null;
     public static void listen() throws IOException {
         server = HttpServer.create(new InetSocketAddress(Config.I.listenPort()), 0);
         _Log.info("HTTP 服务器启动，正在监听端口 "+ Config.I.listenPort());
+
         server.createContext("/", exchange -> {
             if ("POST".equals(exchange.getRequestMethod())) {
                 InputStream inputStream = exchange.getRequestBody();
@@ -34,7 +36,6 @@ public class QQNet {
                 String response = "false";
                 Gson gson = new Gson();
                 QQData.Message message = gson.fromJson(json, QQData.Message.class);
-
                 if (message != null) {
                     if (message.user_id.isEmpty()) return;
                     _Log.debug("收到来自 " + message.user_id + " 的消息");
@@ -48,48 +49,42 @@ public class QQNet {
                             UserUaualConfig userUaualConfig = new UserUaualConfig(message.user_id);
                             serverCore = ServerCore.getServer(userUaualConfig.privateServer());
                         } else serverCore = ServerCore.getGroupServer(message.group_id);
+                        //_Log.debug(serverCore.serverData.serverName());
+                        if (CommandRegistryNew.getCommands().containsKey(command)) {
+                            PriorityQueue<CommandInfo> priorityQueue = CommandRegistryNew.getCommands().get(command);
+                            if (priorityQueue != null){
+                                while (!priorityQueue.isEmpty()) {
+                                    CommandInfo commandInfo = priorityQueue.poll();
+                                    if (Permission.getPermission(message.user_id, serverCore).getPermission() <= commandInfo.permission().getPermission()) {
+                                        qa = false;
+                                        try {
+                                            Class<?> commandClass = commandInfo.commandClass();
+                                            QQCommand qqCommand;
+                                            try {
+                                                // 尝试调用接受 Message 参数的构造函数
+                                                Constructor<?> constructor = commandClass.getDeclaredConstructor(QQData.Message.class, ServerCore.class);
+                                                qqCommand = (QQCommand) constructor.newInstance(message, serverCore);
+                                            } catch (NoSuchMethodException e) {
+                                                // 如果没有接受 Message 参数的构造函数，则调用无参的构造函数
+                                                qqCommand = (QQCommand) commandClass.getDeclaredConstructor().newInstance();
+                                            }
 
-                        if (CommandRegistryNew.getCommandMap().containsKey(command)) {
-                            CommandInfo commandInfo = CommandRegistryNew.getCommandMap().get(command);
+                                            if (qqCommand.runCommand()) {
+                                                response ="true"; // 执行命令
+                                                break;
+                                            }
 
-                            if (Permission.getPermission(message.user_id, serverCore).getPermission() <= commandInfo.permission().getPermission()) {
-                                qa = false;
-                                try {
-                                    Class<?> commandClass = commandInfo.commandClass();
-                                    QQCommand qqCommand;
-
-                                    try {
-                                        // 尝试调用接受 Message 参数的构造函数
-                                        Constructor<?> constructor = commandClass.getDeclaredConstructor(QQData.Message.class, ServerCore.class);
-                                        qqCommand = (QQCommand) constructor.newInstance(message, serverCore);
-                                    } catch (NoSuchMethodException e) {
-                                        // 如果没有接受 Message 参数的构造函数，则调用无参的构造函数
-                                        qqCommand = (QQCommand) commandClass.getDeclaredConstructor().newInstance();
+                                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                                                 NoSuchMethodException e) {
+                                            _Log.error(e.getMessage());
+                                        }
                                     }
-
-                                    if (qqCommand.runCommand())response ="true"; // 执行命令
-
-                                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                                         NoSuchMethodException e) {
-                                    _Log.error(e.getMessage());
                                 }
                             }
-                        }
-                        if (qa && serverCore != null) QAMsg(message, serverCore);
-                    }
-                    /*
-                    QQAtCommand atCommand = new QQAtCommand(message);
-                    boolean canRun = !atCommand.runCommand();
-                    QQUsualCommand usualCommand = new QQUsualCommand(message);
-                    if (canRun) canRun = !usualCommand.runCommand();
-                    QQExCommand exCommand = new QQExCommand(message);
-                    if (canRun) canRun = !exCommand.runCommand();
-                    if (canRun) canRun = !QAMsg(message);
-                    if (!canRun) {
-                        response = "true";
-                    }
 
-                     */
+                        }
+                        if (qa && serverCore != null && QAMsg(message, serverCore)) response ="true";
+                    }
                 }
                 exchange.sendResponseHeaders(200, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();

@@ -15,7 +15,7 @@ import nws.dev.$7d2d.system._Log;
 import java.io.File;
 import java.util.List;
 
-@Command(name = "查询物品",permission = Permission.User,type = CommandType.Group)
+@Command(name = "查询物品",permission = Permission.User,type = CommandType.Group,desc = "查询物品 物品名称")
 public class GetItemInfoCommand extends QQExCommand {
     public GetItemInfoCommand(QQData.Message message, ServerCore serverCore) {
         super("getItemInfo", message,serverCore);

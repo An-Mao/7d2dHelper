@@ -8,7 +8,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
-@Command(name = "查找物品",permission = Permission.User,type = CommandType.Group)
+@Command(name = "查找物品",permission = Permission.User,type = CommandType.Group,desc = "查找物品 物品名")
 public class FindItemCommand extends QQExCommand {
     public FindItemCommand(QQData.Message message, ServerCore serverCore) {
         super("findItem", message,serverCore);

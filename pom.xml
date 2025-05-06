@@ -6,7 +6,7 @@
 
     <groupId>nws.dev</groupId>
     <artifactId>7d2d</artifactId>
-    <version>25.05.0200</version>
+    <version>25.05.0601</version>
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
     </build>

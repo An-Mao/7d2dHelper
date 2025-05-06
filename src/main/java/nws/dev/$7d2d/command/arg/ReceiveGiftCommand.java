@@ -9,7 +9,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
-@Command(name = "领取礼包",permission = Permission.User,type = CommandType.Group)
+@Command(name = "领取礼包",permission = Permission.User,type = CommandType.Group,desc = "领取礼包 礼包名称")
 public class ReceiveGiftCommand extends QQExCommand {
     public ReceiveGiftCommand(QQData.Message message, ServerCore serverCore) {
         super("receiveGift",message,serverCore);

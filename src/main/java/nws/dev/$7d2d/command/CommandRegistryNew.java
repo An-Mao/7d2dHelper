@@ -33,51 +33,24 @@ public class CommandRegistryNew {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             String path = packageName.replace('.', '/');
             Enumeration<URL> resources = classLoader.getResources(path);
-
             while (resources.hasMoreElements()) {
                 URL resource = resources.nextElement();
                 if (resource.getProtocol().equals("jar")) {
-                    // 从 JAR 文件加载类 (保持不变)
                     String jarPath = resource.getPath().substring(5, resource.getPath().indexOf("!"));
                     JarFile jarFile = new JarFile(new File(jarPath));
                     Enumeration<JarEntry> entries = jarFile.entries();
                     while (entries.hasMoreElements()) {
                         JarEntry entry = entries.nextElement();
                         if (entry.getName().endsWith(".class") && entry.getName().startsWith(path)) {
-                            String className = entry.getName().replace("/", ".").replace(".class", "");
-                            reg(className);
-                            /*
-                            try {
-                                Class<?> clazz = Class.forName(className);
-                                if (clazz.isAnnotationPresent(Command.class) && !Modifier.isAbstract(clazz.getModifiers()) && !Modifier.isInterface(clazz.getModifiers())) {
-                                    Command commandAnnotation = clazz.getAnnotation(Command.class);
-                                    String commandName = commandAnnotation.name();
-                                    if (commandName == null || commandName.isEmpty()) {
-                                        commandName = clazz.getSimpleName().toLowerCase().replace("command", ""); // 默认命令名为类名小写
-                                    }
-                                    Permission permission = commandAnnotation.permission(); // 获取 permission 属性
-                                    CommandType type = commandAnnotation.type();
-                                    int priority = commandAnnotation.priority();
-
-                                    // 创建 CommandInfo 对象，存储命令信息
-                                    CommandInfo commandInfo = new CommandInfo(clazz, permission, type,priority);
-                                    commandMap.put(commandName, commandInfo);
-                                    _Log.debug("Registered command: " + commandName + " -> " + clazz.getName());
-                                }
-                            } catch (ClassNotFoundException e) {
-                                _Log.debug("Class not found: " + className);
-                            }
-
-                             */
+                            reg(entry.getName().replace("/", ".").replace(".class", ""));
                         }
                     }
                     jarFile.close();
 
                 } else {
-                    // 从文件系统加载类
                     File dir = new File(resource.getFile());
                     if (dir.exists()) {
-                        processDirectory(dir, packageName); // 使用递归方法处理目录及其子目录
+                        processDirectory(dir, packageName);
                     }
                 }
             }
@@ -90,34 +63,10 @@ public class CommandRegistryNew {
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    // 递归处理子目录
                     String subPackageName = packageName + "." + file.getName();
                     processDirectory(file, subPackageName);
                 } else if (file.getName().endsWith(".class")) {
-                    String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
-                    reg(className);
-                    /*
-                    try {
-                        Class<?> clazz = Class.forName(className);
-                        if (clazz.isAnnotationPresent(Command.class) && !Modifier.isAbstract(clazz.getModifiers()) && !Modifier.isInterface(clazz.getModifiers())) {
-                            Command commandAnnotation = clazz.getAnnotation(Command.class);
-                            String commandName = commandAnnotation.name();
-                            if (commandName == null || commandName.isEmpty()) {
-                                commandName = clazz.getSimpleName().toLowerCase().replace("command", ""); // 默认命令名为类名小写
-                            }
-                            Permission permission = commandAnnotation.permission(); // 获取 permission 属性
-                            CommandType type = commandAnnotation.type();
-
-                            // 创建 CommandInfo 对象，存储命令信息
-                            CommandInfo commandInfo = new CommandInfo(clazz, permission, type);
-                            commandMap.put(commandName, commandInfo);
-                            _Log.debug("Registered command: " + commandName + " -> " + clazz.getName());
-                        }
-                    } catch (ClassNotFoundException e) {
-                        _Log.debug("Class not found: " + className);
-                    }
-
-                     */
+                    reg(packageName + "." + file.getName().substring(0, file.getName().length() - 6));
                 }
             }
         }
@@ -130,15 +79,13 @@ public class CommandRegistryNew {
                 Command commandAnnotation = clazz.getAnnotation(Command.class);
                 if (commandAnnotation != null) {
                     String commandName = commandAnnotation.name();
-                    // 默认命令名为类名小写
                     if (commandName == null || commandName.isEmpty())
                         commandName = clazz.getSimpleName().toLowerCase().replace("command", "");
-                    // 获取 permission 属性
-                    Permission permission = commandAnnotation.permission();
-                    CommandType type = commandAnnotation.type();
-                    int priority = commandAnnotation.priority();
-                    // 创建 CommandInfo 对象，存储命令信息
-                    CommandInfo commandInfo = new CommandInfo(clazz, commandAnnotation.permission(), commandAnnotation.type(), commandAnnotation.priority());
+                    CommandInfo commandInfo = new CommandInfo(clazz,
+                            commandAnnotation.permission(),
+                            commandAnnotation.type(),
+                            commandAnnotation.priority(),
+                            commandAnnotation.desc().isEmpty() ? commandName : commandAnnotation.desc());
                     Commands.put(commandName, commandInfo);
                     _Log.debug("Registered command: " + commandName + " -> " + clazz.getName());
                 }

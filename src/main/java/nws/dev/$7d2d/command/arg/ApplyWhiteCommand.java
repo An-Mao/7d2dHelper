@@ -11,7 +11,7 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 import nws.dev.$7d2d.system._Log;
 
-@Command(name = "申请白名单",permission = Permission.User,type = CommandType.Group)
+@Command(name = "申请白名单",permission = Permission.User,type = CommandType.Group,desc = "申请白名单 白名单名称")
 public class ApplyWhiteCommand extends QQExCommand {
     public ApplyWhiteCommand(QQData.Message message, ServerCore serverCore) {
         super("applyWhite", message,serverCore);

@@ -8,7 +8,7 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "同意跟档+",permission = Permission.ServerAdmin,type = CommandType.Group)
+@Command(name = "同意跟档",permission = Permission.ServerAdmin,type = CommandType.Group,desc = "同意跟档@QQ",priority = 990)
 public class AgreeSaveCommand extends QQAtCommand {
     public AgreeSaveCommand(QQData.Message message, ServerCore serverCore) {
         super("agreeSave", message,serverCore);
