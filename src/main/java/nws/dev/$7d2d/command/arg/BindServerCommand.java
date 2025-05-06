@@ -7,7 +7,6 @@ import nws.dev.$7d2d.config.UserUaualConfig;
 import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
 @Command(name = "绑定服务器",permission = Permission.User,type = CommandType.Private)
 public class BindServerCommand extends QQExCommand {

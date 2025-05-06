@@ -20,4 +20,5 @@ public  @interface Command {
      */
     Permission permission() default Permission.Admin;
     CommandType type() default CommandType.All;
+    int priority() default 1000;
 }
