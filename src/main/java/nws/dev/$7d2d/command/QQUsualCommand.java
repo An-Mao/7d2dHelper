@@ -9,4 +9,9 @@ public abstract class QQUsualCommand extends QQCommand{
         super(c,message,serverCore);
         this.msg = message.raw_message;
     }
+
+    @Override
+    public boolean runCommand() {
+        return super.runCommand() && this.msg.equals(this.c);
+    }
 }
