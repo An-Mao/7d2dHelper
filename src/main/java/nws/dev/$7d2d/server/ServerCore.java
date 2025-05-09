@@ -1,14 +1,15 @@
 package nws.dev.$7d2d.server;
 
 import com.google.gson.Gson;
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.DataTable;
+import nws.dev.$7d2d.command.CommandRegistryNew;
 import nws.dev.$7d2d.config.*;
 import nws.dev.$7d2d.data.KitData;
 import nws.dev.$7d2d.data.PlayerInfoData;
 import nws.dev.$7d2d.data.ServerData;
 import nws.dev.$7d2d.net.*;
-import nws.dev.$7d2d.system._File;
-import nws.dev.$7d2d.system._Log;
+import nws.dev.core.system._File;
 
 import java.awt.*;
 import java.io.File;
@@ -72,9 +73,10 @@ public class ServerCore {
     private final String onlinePlayerUrl;
     public final String userItemDir;
     private final String commandUrl;
+    public final RaffleConfig raffleConfig;
 
     public ServerCore(ServerData serverData){
-        _Log.info("==========开始加载服务器配置==========","服务器配置名称："+serverData.serverName());
+        $7DTD._Log.info("==========开始加载服务器配置==========","服务器配置名称："+serverData.serverName());
         this.onlinePlayerUrl = "http://"+ serverData.kitHost() +"/api/getplayersonline?admintoken="+serverData.adminToken();
         this.commandUrl = "http://"+ serverData.kitHost() +"/api/executeconsolecommand?admintoken="+serverData.adminToken();
 
@@ -93,50 +95,64 @@ public class ServerCore {
 
 
 
-        _Log.info("开始加载命令配置");
-        command = new CommandConfig(getConfigPre()+"command.json").getDatas();
+        $7DTD._Log.info("开始加载命令配置");
+        if (!new File(getConfigPre()+"command.json").exists()){
+            $7DTD._Log.info("开始输出默认命令配置");
+            HashMap<String, Boolean> map = new HashMap<>();
+            CommandRegistryNew.getCommands().forEach((s, priorityQueue) -> map.put(s, true));
+            command = map;
+            CommandConfig commandConfig = new CommandConfig(getConfigPre()+"command.json");
+            commandConfig.getDatas().clear();
+            commandConfig.getDatas().putAll(command);
+            commandConfig.save();
 
-        _Log.info("开始加载QA文件");
+        }else command = new CommandConfig(getConfigPre()+"command.json").getDatas();
+
+        $7DTD._Log.info("开始加载QA文件");
         qa = new QA(getConfigPre()+"QA.json").getDatas();
         qa.keySet().forEach(s -> question.append("\\n").append(s));
 
-        _Log.info("开始加载礼包");
+        $7DTD._Log.info("开始加载礼包");
         rewardConfig = new RewardConfig(getConfigPre() + "reward.json");
 
-        _Log.info("开始加载事件文件");
+        $7DTD._Log.info("开始加载事件文件");
         events = new EventsConfig(getConfigPre() + "events.json");
-        _Log.info("开始加载事件信息");
+        $7DTD._Log.info("开始加载事件信息");
         eventList = new EventListConfig(getConfigPre()+"EventList.json");
 
-        _Log.info("开始加载手动白名单列表");
+        $7DTD._Log.info("开始加载手动白名单列表");
         acItem = new ACItemsConfig(getConfigPre()+"ACItems.json");
-        _Log.info("开始加载自动白名单");
+        $7DTD._Log.info("开始加载自动白名单");
         autoWhiteListConfig = new AutoWhiteListConfig(getConfigPre()+"AutoWhite.json");
         autoWhiteList = new AutoWhiteList(this.severDataDir +"/AutoWhiteList.json");
 
-        _Log.info("开始加载字体");
+        $7DTD._Log.info("开始加载字体");
         fontConfig = new FontConfig(getConfigPre()+"font.json");
         loadFont();
-        _Log.info("开始加载画板");
+        $7DTD._Log.info("开始加载画板");
         drawConfig = new DrawConfig(getConfigPre()+"draw.json");
 
-        _Log.info("开始加载物品属性文件");
+        $7DTD._Log.info("开始加载物品属性文件");
         itemAttributeConfig = new ItemAttributeConfig(getConfigPre() + "ItemAttributes.json");
 
-        _Log.info("开始加载每日奖励");
+        $7DTD._Log.info("开始加载每日奖励");
         dailyRewardsConfig = new DailyRewardsConfig(getConfigPre()+"DailyReward.json");
 
-        _Log.info("开始加载游戏文件");
+        $7DTD._Log.info("开始加载游戏文件");
         gameInfo = new GameInfo(this);
 
+        $7DTD._Log.info("开始加载抽奖文件");
+        raffleConfig = new RaffleConfig(getConfigPre() + "raffle.json");
+        raffleConfig.getDatas().items.forEach((rewardData) -> $7DTD._Log.info("加载抽奖物品[" + rewardData .reward().name+"]权重：" + rewardData.weight()));
 
-        _Log.info("初始化Bot");
+
+        $7DTD._Log.info("初始化Bot");
         botNet = new BotNet(this);
-        _Log.info("初始化Kit");
+        $7DTD._Log.info("初始化Kit");
         kitNet = new KitNet(this.serverData);
-        _Log.info("初始化AC");
+        $7DTD._Log.info("初始化AC");
         acNet = new ACNet(this.serverData);
-        _Log.info("初始化心跳");
+        $7DTD._Log.info("初始化心跳");
         heartbeat = new Heartbeat(this);
 
         restartThread = new Thread(() -> {
@@ -167,7 +183,7 @@ public class ServerCore {
                     throw new RuntimeException(e);
                 }
             }
-            _Log.warn("开始重启");
+            $7DTD._Log.warn("开始重启");
             kitNet.stopNet();
             runKitExe();
             kitNet.startServer();
@@ -184,16 +200,16 @@ public class ServerCore {
                 }
             }
             voteList.clear();
-            _Log.info("投票结束");
+            $7DTD._Log.info("投票结束");
             sendChatMsg("投票结束,投票功能将在"+serverData.voteCooldown()+"秒内不可用");
             isVote = false;
         });
         tt = new Thread(() -> {
-            _Log.info("准备重新恢复时间。");
+            $7DTD._Log.info("准备重新恢复时间。");
             int a = serverData.waitTime();
             while (a > 0) {
                 a--;
-                _Log.info("等待 "+a+" 秒后恢复。");
+                $7DTD._Log.info("等待 "+a+" 秒后恢复。");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -211,12 +227,12 @@ public class ServerCore {
     public void loadFont(){
 
         if (fontConfig.isCustom()) {
-            _Log.debug("开始加载自定义字体");
+            $7DTD._Log.debug("开始加载自定义字体");
             String fontPath = DataTable.FontDir+"/"+fontConfig.getFontName();
             try {
                 File fontFile = new File(fontPath);
                 if (!fontFile.exists()) {
-                    _Log.error("字体文件未找到: " + fontPath);
+                    $7DTD._Log.error("字体文件未找到: " + fontPath);
                     font = EmptyFont;
                     return;
                 }
@@ -227,34 +243,34 @@ public class ServerCore {
                 }
 
             } catch (IOException | FontFormatException e) {
-                _Log.error("加载字体文件失败: " + e.getMessage());
+                $7DTD._Log.error("加载字体文件失败: " + e.getMessage());
                 font = EmptyFont;
             }
         }else {
-            _Log.debug("开始加载默认字体");
+            $7DTD._Log.debug("开始加载默认字体");
             try {
                 InputStream fontStream = DataTable.class.getResourceAsStream("/assets/font/NotoSansSC-Regular.otf");
                 if (fontStream == null) {
-                    _Log.error("未找到字体文件");
+                    $7DTD._Log.error("未找到字体文件");
                     return;
                 }
                 font = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(fontConfig.getLineHeight());
                 GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 ge.registerFont(font);
             } catch (IOException | FontFormatException e) {
-                _Log.error(e.getMessage());
+                $7DTD._Log.error(e.getMessage());
             }
         }
     }
 
     public void login() {
-        _Log.info("开始登录Ket");
-        if (kitNet.loginUser()) _Log.info(serverData.serverName() + " Ket登录成功：accessToken=" + kitNet.getToken());
-        else _Log.error(serverData.serverName() + " Ket登录失败");
-        _Log.info("开始登录Bot");
-        if (botNet.loginUser()) _Log.info(serverData.serverName() + " Bot登录成功：session_key=" + botNet.getToken());
-        else _Log.error(serverData.serverName() + " Bot登录失败");
-        _Log.info(serverData.serverName() + " AC登录状态：" + acNet.isLogin());
+        $7DTD._Log.info("开始登录Ket");
+        if (kitNet.loginUser()) $7DTD._Log.info(serverData.serverName() + " Ket登录成功：accessToken=" + kitNet.getToken());
+        else $7DTD._Log.error(serverData.serverName() + " Ket登录失败");
+        $7DTD._Log.info("开始登录Bot");
+        if (botNet.loginUser()) $7DTD._Log.info(serverData.serverName() + " Bot登录成功：session_key=" + botNet.getToken());
+        else $7DTD._Log.error(serverData.serverName() + " Bot登录失败");
+        $7DTD._Log.info(serverData.serverName() + " AC登录状态：" + acNet.isLogin());
         heartbeat.start();
     }
 
@@ -269,7 +285,7 @@ public class ServerCore {
     }
     public KitData.PlayerInfo[] getPlayerList(){
         String response = Net.sendGetData(this.onlinePlayerUrl);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         Gson gson = new Gson();
         return gson.fromJson(response, KitData.PlayerInfo[].class);
     }
@@ -282,14 +298,14 @@ public class ServerCore {
 
     public void restartServer(){
         if (isCooldown) return;
-        _Log.info("即将设置服务器重启");
+        $7DTD._Log.info("即将设置服务器重启");
         isCooldown = true;
         kitNet.restart(serverData.clearSetTime());
         tt.start();
     }
 
     public void runKitExe() {
-        _Log.info(serverData.kitExePath());
+        $7DTD._Log.info(serverData.kitExePath());
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(serverData.kitExePath());
             Process process = processBuilder.start();
@@ -297,7 +313,7 @@ public class ServerCore {
             Thread.sleep(10000);
             //System.out.println("进程退出码: " + exitCode);
         } catch (IOException | InterruptedException e) {
-            _Log.error(e.getMessage());
+            $7DTD._Log.error(e.getMessage());
         }
     }
 
@@ -306,7 +322,7 @@ public class ServerCore {
             String qq = bindUser.get(msg.p());
             UserConfig config = new UserConfig(qq);
             config.setBindDone(msg.p());
-            _Log.info("玩家 "+msg.pn()+" 绑定成功,QQ号为 "+qq);
+            $7DTD._Log.info("玩家 "+msg.pn()+" 绑定成功,QQ号为 "+qq);
             botNet.sendPrivateMsg(msg.p(), "绑定成功,QQ号为 "+qq);
         }
 
@@ -323,9 +339,9 @@ public class ServerCore {
 
 
     public void reloadConfig(){
-        _Log.info("即将重新加载配置");
+        $7DTD._Log.info("即将重新加载配置");
         Config.I.init();
-        _Log.info("重新加载配置完成");
+        $7DTD._Log.info("重新加载配置完成");
     }
 
 
@@ -342,7 +358,7 @@ public class ServerCore {
         if (a >= Math.round(list.length * serverData.voteScale())) {
             isVote = false;
             voteList.clear();
-            _Log.info("投票结束");
+            $7DTD._Log.info("投票结束");
             sendChatMsg("投票结束即将清理服务器!!!");
             restart();
         }
@@ -350,12 +366,12 @@ public class ServerCore {
     public void voteClear(KitData.Msg msg) {
 
         if (!isVote && System.currentTimeMillis() - voteStartTime < serverData.voteCooldown() * 1000L) {
-            _Log.info("投票冷却中");
+            $7DTD._Log.info("投票冷却中");
             botNet.sendPrivateMsg(msg.p(), "投票冷却中,请耐心等待");
             return;
         }
         if (voteList.contains(msg.p())) {
-            _Log.info("玩家【" + msg.pn() + "】已经投过票");
+            $7DTD._Log.info("玩家【" + msg.pn() + "】已经投过票");
             return;
         }
         List<String> playerMsg = new ArrayList<>();
@@ -374,7 +390,7 @@ public class ServerCore {
             voteHeart.start();
         }
         voteList.add(msg.p());
-        _Log.info(playerMsg.toArray(String[]::new));
+        $7DTD._Log.info(playerMsg.toArray(String[]::new));
         sendChatMsg(playerMsg.toArray(String[]::new));
         voteCheck();
 
@@ -399,15 +415,15 @@ public class ServerCore {
     }
 
     public boolean sendServerCommand(String msg){
-        _Log.debug(msg);
+        $7DTD._Log.debug(msg);
         String c = this.commandUrl+"&command="+ Net.urlEncode(msg);
-        _Log.debug(c);
+        $7DTD._Log.debug(c);
         String response = Net.sendGetData(c);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
 
         Gson gson = new Gson();
         KitData.Command res = gson.fromJson(response, KitData.Command.class);
-        _Log.debug(res.result());
+        $7DTD._Log.debug(res.result());
 
         return res.result().equals("1");
     }

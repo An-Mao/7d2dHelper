@@ -7,10 +7,11 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "运行kit",permission = Permission.ServerAdmin,type = CommandType.Private)
+@Command(name = StartServerCommand.COMMAND_NAME,permission = Permission.ServerAdmin,type = CommandType.Private)
 public class StartServerCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "运行kit";
     public StartServerCommand(QQData.Message message, ServerCore serverCore) {
-        super("startServer", message, serverCore);
+        super(COMMAND_NAME, message, serverCore);
     }
 
     @Override

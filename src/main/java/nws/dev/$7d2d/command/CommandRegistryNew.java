@@ -1,8 +1,7 @@
 package nws.dev.$7d2d.command;
 
-import nws.dev.$7d2d.data.Permission;
-import nws.dev.$7d2d.system._Log;
-import nws.dev.$7d2d.system._PriorityMap;
+import nws.dev.$7d2d.$7DTD;
+import nws.dev.core.map._PriorityMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +54,7 @@ public class CommandRegistryNew {
                 }
             }
         } catch (IOException e) {
-            _Log.error(e.getMessage());
+            $7DTD._Log.error(e.getMessage());
         }
     }
     private static void processDirectory(File directory, String packageName) {
@@ -87,11 +86,11 @@ public class CommandRegistryNew {
                             commandAnnotation.priority(),
                             commandAnnotation.desc().isEmpty() ? commandName : commandAnnotation.desc());
                     Commands.put(commandName, commandInfo);
-                    _Log.debug("Registered command: " + commandName + " -> " + clazz.getName());
+                    $7DTD._Log.debug("Registered command: " + commandName + " -> " + clazz.getName());
                 }
             }
         } catch (ClassNotFoundException e) {
-            _Log.debug("Class not found: " + className);
+            $7DTD._Log.debug("Class not found: " + className);
         }
     }
 }

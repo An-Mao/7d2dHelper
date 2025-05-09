@@ -1,10 +1,10 @@
 package nws.dev.$7d2d.config;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.data.ServerData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._File;
-import nws.dev.$7d2d.system._Log;
+import nws.dev.core.system._File;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class Configs {
     public static void LoadServerData() {
         ServerCore.LIST.clear();
         _File.getFiles(DataTable.ServerListDir,".json").forEach(path -> {
-            _Log.debug("file:"+path.getFileName().toString());
+            $7DTD._Log.debug("file:"+path.getFileName().toString());
             ServerData serverDataIO = new ServerDataIO(path.getFileName().toString()).getDatas();
             if (serverDataIO != null) ServerCore.LIST.put(getFileNameWithoutExtension(path.getFileName().toString()),new ServerCore(serverDataIO));
         });

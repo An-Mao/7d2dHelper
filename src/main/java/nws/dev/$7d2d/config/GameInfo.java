@@ -1,7 +1,7 @@
 package nws.dev.$7d2d.config;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,7 +46,7 @@ public class GameInfo {
         if(items.containsKey(name)) {
             StringBuilder sb = new StringBuilder();
             Item item = items.get(name);
-            _Log.debug(item.toString());
+            $7DTD._Log.debug(item.toString());
             sb.append("名称：").append(getLocalization(item.name())).append("\\n-----描述-----\\n").append(getLocalization(item.description())).append("\\n-----属性-----\\n").append(item.attribute());
             return sb.toString();
         }
@@ -147,13 +147,13 @@ public class GameInfo {
                             if (chineseIndex != -1 && englishIndex == -1) englishIndex = chineseIndex;
                         } else {
                             if (language.containsKey(parts.get(0))) {
-                                _Log.debug("语言文件解析异常，已存在相同的Key。key = " + parts.get(0)+", value = "+language.get(parts.get(0)),filePath);
+                                $7DTD._Log.debug("语言文件解析异常，已存在相同的Key。key = " + parts.get(0)+", value = "+language.get(parts.get(0)),filePath);
                                 continue;
                             }
                             if (parts.size() <= chineseIndex) {
                                 if (chineseIndex != englishIndex && parts.size() > englishIndex) {
                                     language.put(parts.get(0), parts.get(englishIndex));
-                                }else _Log.debug("语言文件格式错误", parts.get(0), String.valueOf(parts.size() ));
+                                }else $7DTD._Log.debug("语言文件格式错误", parts.get(0), String.valueOf(parts.size() ));
                                 continue;
                             }else language.put(parts.get(0), parts.get(chineseIndex));
                         }
@@ -165,19 +165,19 @@ public class GameInfo {
                     List<String> parts = parseCsvLine(currentLine.toString().trim());
                     if (chineseIndex != -1){
                         if (language.containsKey(parts.get(0))) {
-                            _Log.debug("语言文件解析异常，已存在相同的Key。key = " + parts.get(0)+", value = "+language.get(parts.get(0)),filePath);
+                            $7DTD._Log.debug("语言文件解析异常，已存在相同的Key。key = " + parts.get(0)+", value = "+language.get(parts.get(0)),filePath);
                             return;
                         }
                         if (parts.size() <= chineseIndex) {
                             if (chineseIndex != englishIndex && parts.size() > englishIndex) {
                                 language.put(parts.get(0), parts.get(englishIndex));
-                            }else _Log.debug("语言文件格式错误", parts.get(0), String.valueOf(parts.size() ));
+                            }else $7DTD._Log.debug("语言文件格式错误", parts.get(0), String.valueOf(parts.size() ));
                         }else language.put(parts.get(0), parts.get(chineseIndex));
                     }
                 }
 
             } catch (IOException e) {
-                _Log.error("读取语言文件出错: " + e.getMessage());
+                $7DTD._Log.error("读取语言文件出错: " + e.getMessage());
             }
             /*
             try (BufferedReader br = new BufferedReader(new FileReader(file + "/config/localization.txt"))) {
@@ -194,13 +194,13 @@ public class GameInfo {
                         }
                     } else {
                         if (parts.size() <= chineseIndex) {
-                            _Log.error("语言文件格式错误", parts.get(0), String.valueOf(parts.size() ));
+                            $7DTD._Log.error("语言文件格式错误", parts.get(0), String.valueOf(parts.size() ));
                             continue;
                         }else language.put(parts.get(0), parts.get(chineseIndex));
                     }
                 }
             } catch (IOException e) {
-                _Log.error("读取语言文件出错: " + e.getMessage());
+                $7DTD._Log.error("读取语言文件出错: " + e.getMessage());
             }
 
              */
@@ -295,7 +295,7 @@ public class GameInfo {
         recipes.clear();
         ModFiles.forEach(file -> {
             String filePath = file + "/config/recipes.xml";
-            _Log.debug("加载配方",filePath);
+            $7DTD._Log.debug("加载配方",filePath);
             List<Element> items1 = getElementsFromXMLFile(filePath, "/recipes/recipe");
             loadRecipe(items1);
             List<Element> items2 = getElementsFromXMLFile(filePath, "/configs/append/recipe");
@@ -359,7 +359,7 @@ public class GameInfo {
             fis.close(); // 关闭 FileInputStream
 
         } catch (Exception e) {
-            _Log.error(e.getMessage());
+            $7DTD._Log.error(e.getMessage());
             //e.printStackTrace();
         }
         return items;

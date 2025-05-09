@@ -1,10 +1,10 @@
 package nws.dev.$7d2d.command;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.QQHelper;
 import nws.dev.$7d2d.register.IRegistrable;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
 public abstract class QQCommand implements ICommandCore, IRegistrable {
     protected final String c;
@@ -40,10 +40,10 @@ public abstract class QQCommand implements ICommandCore, IRegistrable {
 
     public void sendMsg(String msg) {
         if (isGroup && isEnableGroup()) {
-            _Log.debug("发送群聊消息");
+            $7DTD._Log.debug("发送群聊消息");
             QQHelper.easySendGroupReplyMsg(server,this.group, msgId, msg);
         }else {
-            _Log.debug("发送私聊消息");
+            $7DTD._Log.debug("发送私聊消息");
             QQHelper.easySendMsg(this.qq, msg);
         }
     }
@@ -51,7 +51,7 @@ public abstract class QQCommand implements ICommandCore, IRegistrable {
     @Override
     public boolean runCommand() {
         if (server == null) return false;
-        if (c.isEmpty() || !server.commandIsEnable(this.c))return false;
+        if (c.isEmpty() || !c.equals(this.msg) || !server.commandIsEnable(this.c))return false;
         if (isGroup && isEnableGroup())return groupMsg();
         return privateMsg();
     }
@@ -66,7 +66,6 @@ public abstract class QQCommand implements ICommandCore, IRegistrable {
 
 
     public boolean isAdmin() {
-
         return server.serverData.adminQQ().contains(this.qq);
     }
 

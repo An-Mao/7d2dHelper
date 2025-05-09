@@ -1,9 +1,9 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.json._JsonConfig;
-import nws.dev.$7d2d.system._Image;
-import nws.dev.$7d2d.system._Log;
+import nws.dev.core.draw._Image;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,7 +43,7 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
             File file = new File(filePath);
             backgroundImage = ImageIO.read(file);
         } catch (IOException e) {
-            _Log.error(e.getMessage());
+            $7DTD._Log.error(e.getMessage());
         }
         bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
         graphics = bufferedImage.getGraphics();
@@ -205,7 +205,7 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
                 newTexts.add(s);
             }
         });
-        _Log.debug(newTexts.toString());
+        $7DTD._Log.debug(newTexts.toString());
         int height = newTexts.size() * (int)(fontConfig.getLineHeight()+ 2f) + getDatas().top *2;
         _Image image = new _Image(getDatas().width(), height, getDatas().scaleFactor(), Configs.font);
         if (getDatas().backgroundType() == 0) {

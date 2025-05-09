@@ -7,11 +7,12 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "重新加载配置",permission = Permission.Admin,type = CommandType.Private)
+@Command(name = ReloadConfigCommand.COMMAND_NAME,permission = Permission.Admin,type = CommandType.Private)
 public class ReloadConfigCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "重新加载配置";
 
     public ReloadConfigCommand(QQData.Message message, ServerCore serverCore) {
-        super("reloadConfig", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

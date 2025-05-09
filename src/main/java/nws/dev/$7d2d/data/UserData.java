@@ -8,4 +8,5 @@ public class UserData {
     public HashMap<String, Boolean> reward = new HashMap<>();
     public int recordItemLimit = 0;
     public boolean canExtractSaveItem = false;
+    public long raffleTime = 0;
 }

@@ -25,4 +25,9 @@ public abstract class QQAtCommand extends QQCommand {
             this.target = "";
         }
     }
+
+    @Override
+    public boolean runCommand() {
+        return super.runCommand() && !this.target.isEmpty();
+    }
 }

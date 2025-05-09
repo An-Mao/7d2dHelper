@@ -7,10 +7,11 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "重启服务器",permission = Permission.ServerAdmin,type = CommandType.Private)
+@Command(name = RestartServerCommand.COMMAND_NAME,permission = Permission.ServerAdmin,type = CommandType.Private)
 public class RestartServerCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "重启服务器";
     public RestartServerCommand(QQData.Message message, ServerCore serverCore) {
-        super("restartServer", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

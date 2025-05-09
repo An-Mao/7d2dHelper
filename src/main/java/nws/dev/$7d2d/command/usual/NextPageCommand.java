@@ -11,10 +11,11 @@ import nws.dev.$7d2d.server.ServerCore;
 
 import java.util.List;
 
-@Command(name = "下一页",permission = Permission.ServerAdmin,type = CommandType.All)
+@Command(name = NextPageCommand.COMMAND_NAME,permission = Permission.ServerAdmin,type = CommandType.All)
 public class NextPageCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "下一页";
     public NextPageCommand(QQData.Message message, ServerCore serverCore) {
-        super("nextPage", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

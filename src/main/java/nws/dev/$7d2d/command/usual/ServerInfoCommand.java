@@ -1,5 +1,6 @@
 package nws.dev.$7d2d.command.usual;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
 import nws.dev.$7d2d.command.QQUsualCommand;
@@ -7,14 +8,14 @@ import nws.dev.$7d2d.data.KitData;
 import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
 import java.time.LocalTime;
 
-@Command(name = "服务器信息",permission = Permission.User,type = CommandType.Group)
+@Command(name = ServerInfoCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.Group)
 public class ServerInfoCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "服务器信息";
     public ServerInfoCommand(QQData.Message message, ServerCore serverCore) {
-        super("serverInfo", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override
@@ -28,7 +29,7 @@ public class ServerInfoCommand extends QQUsualCommand {
     }
 
     private boolean serverInfo() {
-        _Log.info("获取服务器状态");
+        $7DTD._Log.info("获取服务器状态");
         sendMsg(getServerInfo());
         return true;
     }

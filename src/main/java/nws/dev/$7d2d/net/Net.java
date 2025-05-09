@@ -1,6 +1,7 @@
 package nws.dev.$7d2d.net;
 
-import nws.dev.$7d2d.system._Log;
+
+import nws.dev.$7d2d.$7DTD;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -26,7 +27,7 @@ public class Net {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
     public static String sendGetData(String url){
-        _Log.debug("Get: "+url);
+        $7DTD._Log.debug("Get: "+url);
         return sendData(url,"GET",null,"");
     }
     public static String sendData(String url, String type, HashMap<String, String> dataHead, String dataSend){
@@ -52,7 +53,7 @@ public class Net {
             connection.disconnect();
             return response.toString();
         } catch (Exception e) {
-            _Log.error(e.getMessage());
+            $7DTD._Log.error(e.getMessage());
             return "";
         }
     }

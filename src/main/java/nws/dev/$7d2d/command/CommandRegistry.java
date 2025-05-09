@@ -1,6 +1,7 @@
 package nws.dev.$7d2d.command;
 
-import nws.dev.$7d2d.system._Log;
+
+import nws.dev.$7d2d.$7DTD;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class CommandRegistry {
                 }
             }
         } catch (IOException e) {
-            _Log.error(e.getMessage());
+            $7DTD._Log.error(e.getMessage());
         }
     }
 }

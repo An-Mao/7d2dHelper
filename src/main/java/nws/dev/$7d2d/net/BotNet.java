@@ -1,6 +1,7 @@
 package nws.dev.$7d2d.net;
 
 import com.google.gson.Gson;
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.config.UserConfig;
 import nws.dev.$7d2d.data.BotData;
 import nws.dev.$7d2d.data.RewardData;
@@ -8,7 +9,6 @@ import nws.dev.$7d2d.data.ServerData;
 import nws.dev.$7d2d.data.Web;
 import nws.dev.$7d2d.helper.OtherHelper;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class BotNet {
 
     public boolean loginUser() {
         String response = Net.sendGetData(this.loginUrl);
-        _Log.debug("bot 登录结果："+response);
+        $7DTD._Log.debug("bot 登录结果："+response);
         Gson gson = new Gson();
         Use = gson.fromJson(response, Web.Bot.class);
         return Use != null && Use.result == 1;
@@ -47,19 +47,19 @@ public class BotNet {
     public boolean sendPoint(String user, int count) {
         String url = this.pointUrl + getToken() +"&p="+user+"&count="+count+"&isnotice=1";
         String response = Net.sendGetData(url);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
     public boolean giveItem(String user, String name, int count, int quality) {
         String url = this.giveItemUrl+ getToken() +"&p="+user+"&name="+Net.urlEncode(name)+"&count="+count+"&quality="+quality;
         String response = Net.sendGetData(url);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
     public boolean killPlayer(String user) {
         String url = rootUrl +"api/action_kill?key="+ getToken() +"&p="+user;
         String response = Net.sendGetData(url);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
 
@@ -71,7 +71,7 @@ public class BotNet {
         while (name.isEmpty()) {
             String url = this.localUrl + getToken() + "&page=" + page + "&limit=" + limit + "&keyword=" + Net.urlEncode(itemId);
             String response = Net.sendGetData(url);
-            _Log.debug(response);
+            $7DTD._Log.debug(response);
             Gson gson = new Gson();
             BotData.ItemList res = gson.fromJson(response, BotData.ItemList.class);
             for (BotData.ItemInfo item : res.data()) {
@@ -87,14 +87,14 @@ public class BotNet {
 
     public String getToken() {
         if (Use == null || Use.session_key == null || Use.session_key.isEmpty() || !checkLogin()) {
-            _Log.warn("session_key失效，尝试重新登录");
+            $7DTD._Log.warn("session_key失效，尝试重新登录");
             if (!loginUser()) return "";
         }
         return Use.session_key;
     }
     public boolean checkLogin() {
         String response = Net.sendGetData(rootUrl +"api/checksession?key="+ Use.session_key);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
 
@@ -119,7 +119,7 @@ public class BotNet {
         while (!isAll) {
             String url = rootUrl +"api/point?key="+getToken()+"&page="+page+"&limit="+limit;
             String response = Net.sendGetData(url);
-            _Log.debug(response);
+            $7DTD._Log.debug(response);
             Gson gson = new Gson();
             BotData.UserList res = gson.fromJson(response, BotData.UserList.class);
             list.addAll(List.of(res.data()));
@@ -148,7 +148,7 @@ public class BotNet {
         while (true) {
             String url = rootUrl +"api/players?key="+getToken()+"&page="+page+"&limit="+limit;
             String response = Net.sendGetData(url);
-            _Log.debug(response);
+            $7DTD._Log.debug(response);
             Gson gson = new Gson();
             BotData.PlayerList res = gson.fromJson(response, BotData.PlayerList.class);
             list.addAll(List.of(res.data()));
@@ -163,13 +163,13 @@ public class BotNet {
     public boolean sendPrivateMsg(String user, String msg) {
         String url = rootUrl +"api/action_sayprivate?key="+getToken()+"&p="+user+"&name="+serverData.serverName()+"&text="+Net.urlEncode(msg);
         String response = Net.sendGetData(url);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
     public boolean sendPublicMsg(String msg) {
         String url = rootUrl +"api/action_saypublic?key="+getToken()+"&name="+serverData.serverName()+"&text="+Net.urlEncode(msg);
         String response = Net.sendGetData(url);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
 
@@ -195,10 +195,18 @@ public class BotNet {
     public String giveReward(UserConfig user, String pack) {
         RewardData rewardData = serverCore.rewardConfig.getReward(pack);
         return switch (rewardData.type) {
-            case 0: yield addPoint(user, pack, rewardData.count);
-            case 1: yield giveItem(user, pack, rewardData.name, rewardData.count, rewardData.quality);
-            case 2: yield dropPoint(user, pack, rewardData.count);
-            default: yield "无此礼包";
+            case 0 -> addPoint(user, pack, rewardData.count);
+            case 1 -> giveItem(user, pack, rewardData.name, rewardData.count, rewardData.quality);
+            case 2 -> dropPoint(user, pack, rewardData.count);
+            default -> "无此礼包";
+        };
+    }
+    public String giveReward(UserConfig user, RewardData rewardData) {
+        return switch (rewardData.type) {
+            case 0 -> addPoint(user, rewardData.count);
+            case 1 -> giveItem(user, rewardData.name, rewardData.count, rewardData.quality);
+            case 2 -> dropPoint(user, rewardData.count);
+            default -> "无此礼包";
         };
     }
 
@@ -209,6 +217,12 @@ public class BotNet {
         }
         else return "领取失败";
     }
+    private String dropPoint(UserConfig user, int count) {
+        if (sendPoint(user.getSteamID(),-count)) {
+            return "失去"+count+"积分";
+        }
+        else return "操作积分失败";
+    }
 
     private String giveItem(UserConfig user, String pack, String name, int count, int quality) {
         if (giveItem(user.getSteamID(), name, count, quality)) {
@@ -216,6 +230,12 @@ public class BotNet {
             return "您成功领取礼包，获得"+quality+"品的【"+ OtherHelper.removeColorCodes(getItemName(name))+"】×"+count;
         }
         else return "领取失败";
+    }
+    private String giveItem(UserConfig user,String name, int count, int quality) {
+        if (giveItem(user.getSteamID(), name, count, quality)) {
+            return "获得"+quality+"品的【"+ OtherHelper.removeColorCodes(getItemName(name))+"】×"+count;
+        }
+        else return "给予物品失败";
     }
 
     private String addPoint(UserConfig user, String pack, int count) {
@@ -225,12 +245,18 @@ public class BotNet {
         }
         else return "领取失败";
     }
+    public String addPoint(UserConfig user,  int count) {
+        if (sendPoint(user.getSteamID(),count)) {
+            return "成功添加"+count+"积分";
+        }
+        else return "添加积分失败";
+    }
 
 
     public BotData.GameState getGameState() {
         String url = rootUrl +"api/gamestats?key="+getToken();
         String response = Net.sendGetData(url);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         Gson gson = new Gson();
         return gson.fromJson(response, BotData.GameState.class);
     }

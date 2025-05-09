@@ -12,10 +12,11 @@ import nws.dev.$7d2d.server.ServerCore;
 
 import java.util.ArrayList;
 import java.util.List;
-@Command(name = "提取物品",permission = Permission.User,type = CommandType.All)
+@Command(name = SendSaveItemCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.All)
 public class SendSaveItemCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "提取物品";
     public SendSaveItemCommand(QQData.Message message, ServerCore serverCore) {
-        super("sendSaveItem", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

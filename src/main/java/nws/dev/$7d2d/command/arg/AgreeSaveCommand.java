@@ -8,10 +8,11 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "同意跟档",permission = Permission.ServerAdmin,type = CommandType.Private,desc = "同意跟档 qq")
+@Command(name = AgreeSaveCommand.COMMAND_NAME,permission = Permission.ServerAdmin,type = CommandType.Private,desc = "同意跟档 qq")
 public class AgreeSaveCommand extends QQExCommand {
+    public static final String COMMAND_NAME = "同意跟档";
     public AgreeSaveCommand(QQData.Message message, ServerCore serverCore) {
-        super("agreeSave", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

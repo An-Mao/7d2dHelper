@@ -1,11 +1,11 @@
 package nws.dev.$7d2d.net;
 
 import com.google.gson.Gson;
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.data.KitData;
 import nws.dev.$7d2d.data.ServerData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
-import nws.dev.$7d2d.system._ThreadMonitor;
+import nws.dev.core.system._ThreadMonitor;
 
 public class Heartbeat {
     private final ServerCore serverCore;
@@ -24,7 +24,7 @@ public class Heartbeat {
         this.chatSyncUrl = "http://"+serverData.kitHost() +"/api/chat_sync?admintoken="+serverData.adminToken();
 
         heart = new _ThreadMonitor(() -> {
-            _Log.info("开始监听服务器消息，心跳频率"+serverData.heartInterval()+"ms");
+            $7DTD._Log.info("开始监听服务器消息，心跳频率"+serverData.heartInterval()+"ms");
             int heartInterval = serverData.heartInterval();
             while (Start) {
                 try {
@@ -50,12 +50,12 @@ public class Heartbeat {
                             setMsgId();
                         }
                     }else {
-                        _Log.error("拉取服务器信息失败，10秒后重试");
+                        $7DTD._Log.error("拉取服务器信息失败，10秒后重试");
                         heartInterval = 10000;
 
                     }
                 } catch (InterruptedException e) {
-                    _Log.error("心跳异常",e.getMessage());
+                    $7DTD._Log.error("心跳异常",e.getMessage());
                     break;
                 }
             }
@@ -71,17 +71,17 @@ public class Heartbeat {
     }
     public KitData.GameMsg getMsg(String url) {
         String response = Net.sendGetData(url);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         Gson gson = new Gson();
         return gson.fromJson(response, KitData.GameMsg.class);
     }
 
     public void start() {
         if (serverData.enableKitHeartbeat()) {
-            _Log.info("心跳启动");
+            $7DTD._Log.info("心跳启动");
             Start = true;
             heart.start();
-        }else _Log.info("心跳已禁用");
+        }else $7DTD._Log.info("心跳已禁用");
     }
     public void stop() {
         Start = false;

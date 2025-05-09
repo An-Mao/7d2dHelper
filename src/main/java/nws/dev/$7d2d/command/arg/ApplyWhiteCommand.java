@@ -1,5 +1,6 @@
 package nws.dev.$7d2d.command.arg;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
 import nws.dev.$7d2d.command.QQExCommand;
@@ -9,12 +10,12 @@ import nws.dev.$7d2d.data.BotData;
 import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
-@Command(name = "申请白名单",permission = Permission.User,type = CommandType.Group,desc = "申请白名单 白名单名称")
+@Command(name = ApplyWhiteCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.Group,desc = "申请白名单 白名单名称")
 public class ApplyWhiteCommand extends QQExCommand {
+    public static final String COMMAND_NAME = "申请白名单";
     public ApplyWhiteCommand(QQData.Message message, ServerCore serverCore) {
-        super("applyWhite", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override
@@ -32,23 +33,23 @@ public class ApplyWhiteCommand extends QQExCommand {
             sendMsg("指令格式错误，正确格式：申请白名单 白名单名称");
             return false;
         }
-        _Log.info("申请白名单");
+        $7DTD._Log.info("申请白名单");
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()) {
-            _Log.debug("已绑定账号");
+            $7DTD._Log.debug("已绑定账号");
             BotData.PlayerInfo info = server.botNet.getOnlinePlayerBySteamID(config.getSteamID());
             if (info == null) {
-                _Log.debug("未找到玩家");
+                $7DTD._Log.debug("未找到玩家");
                 sendMsg( "未找到玩家，请确认玩家是否在线");
             } else {
                 ACItemsData data = server.acItem.get(rawArg);
                 if (data == null) data = server.autoWhiteList.getDatas().get(rawArg);
                 if (data == null) {
-                    _Log.debug("未找到此白名单");
+                    $7DTD._Log.debug("未找到此白名单");
                     sendMsg( "未找到此白名单，请确认此白名单是否存在");
                 } else {
                     if (data.allNeed() ? info.point() >= data.point() && info.level() >= data.level() : info.point() >= data.point() || info.level() >= data.level()) {
-                        _Log.debug("白名单检测成功");
+                        $7DTD._Log.debug("白名单检测成功");
                         if (server.acNet.addWhite(info.userid(), data.getFormatItems())) {
                             sendMsg( "白名单添加成功");
                         } else {
@@ -62,7 +63,7 @@ public class ApplyWhiteCommand extends QQExCommand {
                 }
             }
         } else {
-            _Log.debug("未绑定账号");
+            $7DTD._Log.debug("未绑定账号");
             sendMsg( "未绑定账号，请先绑定账号");
         }
         return true;

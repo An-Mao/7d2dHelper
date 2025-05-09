@@ -7,10 +7,11 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "清理服务器",permission = Permission.ServerAdmin,type = CommandType.Private)
+@Command(name = ClearServerCommand.COMMAND_NAME,permission = Permission.ServerAdmin,type = CommandType.Private)
 public class ClearServerCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "清理服务器";
     public ClearServerCommand(QQData.Message message, ServerCore serverCore) {
-        super("clearServer", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

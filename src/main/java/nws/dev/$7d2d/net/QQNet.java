@@ -2,6 +2,7 @@ package nws.dev.$7d2d.net;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.CommandInfo;
 import nws.dev.$7d2d.command.CommandRegistryNew;
 import nws.dev.$7d2d.command.QQCommand;
@@ -11,7 +12,6 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.QQHelper;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,23 +26,23 @@ public class QQNet {
     private static HttpServer server = null;
     public static void listen() throws IOException {
         server = HttpServer.create(new InetSocketAddress(Config.I.listenPort()), 0);
-        _Log.info("HTTP 服务器启动，正在监听端口 "+ Config.I.listenPort());
+        $7DTD._Log.info("HTTP 服务器启动，正在监听端口 "+ Config.I.listenPort());
 
         server.createContext("/", exchange -> {
             if ("POST".equals(exchange.getRequestMethod())) {
                 InputStream inputStream = exchange.getRequestBody();
                 String json = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                _Log.debug(json);
+                $7DTD._Log.debug(json);
                 String response = "false";
                 Gson gson = new Gson();
                 QQData.Message message = gson.fromJson(json, QQData.Message.class);
                 if (message != null) {
                     if (message.user_id.isEmpty()) return;
-                    _Log.debug("收到来自 " + message.user_id + " 的消息");
+                    $7DTD._Log.debug("收到来自 " + message.user_id + " 的消息");
                     String command = message.message.get(0).data().get("text");
                     if (command != null && !command.isEmpty()) {
                         if (command.contains(" ")) command = command.split(" ")[0];
-                        _Log.debug("解析指令：" + command);
+                        $7DTD._Log.debug("解析指令：" + command);
                         boolean qa = true;
                         ServerCore serverCore;
                         if (message.message_type.equals("private")) {
@@ -76,7 +76,7 @@ public class QQNet {
 
                                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                                                  NoSuchMethodException e) {
-                                            _Log.error(e.getMessage());
+                                            $7DTD._Log.error(e.getMessage());
                                         }
                                     }
                                 }

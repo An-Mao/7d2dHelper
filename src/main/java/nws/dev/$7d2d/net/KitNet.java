@@ -1,8 +1,8 @@
 package nws.dev.$7d2d.net;
 
 import com.google.gson.Gson;
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.data.*;
-import nws.dev.$7d2d.system._Log;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class KitNet {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/gs_act_autoreboot","POST",headers,"{\"accessToken\":\""+getToken()+"\",\"uuid\":\"595768906\",\"enable\":1,\"keepalive\":1,\"type\":\"1\",\"duration\":\""+time+"\",\"keepalive_timeout\":\"600\"}");
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
     }
 
     public KitData.BanUser getBan(String sid){
@@ -43,7 +43,7 @@ public class KitNet {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/user_ban","POST",headers,"{\"q\":\""+sid+"\",\"perPage\":\"25\",\"page\":\"1\",\"accessToken\":\""+getToken()+"\"}");
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         Gson gson = new Gson();
         KitData.BanInfo ban = gson.fromJson(response, KitData.BanInfo.class);
         if (ban != null && ban.result() == 1 && ban.users() != null && ban.users().length > 0) {
@@ -64,20 +64,20 @@ public class KitNet {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/shutdown","POST",headers,"{\"accessToken\":\""+getToken()+"\"}");
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
     }
 
     public void startServer(){
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/gs_startdefault","POST",headers,"{\"accessToken\":\""+getToken()+"\"}");
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
     }
     public void refreshMap(){
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/mapname_set","POST",headers,"{\"accessToken\":\""+getToken()+"\" ,\"mapname\":\""+getMapName()+"\"}");
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
     }
     public String getMapName(){
         Calendar rightNow = Calendar. getInstance();
@@ -90,7 +90,7 @@ public class KitNet {
         return name.replace("<Minute>", String.valueOf(rightNow.get(Calendar.MINUTE)));
     }
     public KitData.GsList getGsList(){
-        _Log.debug(this.gsListUrl);
+        $7DTD._Log.debug(this.gsListUrl);
         String data = "{\"accessToken\":\""+ getToken()+"\"}";
         HashMap<String,String> headers = getHeaders();
         headers.put("Content-Length", String.valueOf(data.length()));
@@ -98,13 +98,13 @@ public class KitNet {
         headers.put("Origin","http://"+serverData.kitHost());
         headers.put("Referer","http://"+serverData.kitHost() +"/gs");
         String response = Net.sendData(this.gsListUrl,"POST",headers,data);
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         Gson gson = new Gson();
         return gson.fromJson(response, KitData.GsList.class);
     }
     public String getToken() {
         if (webUser == null || !checkToken()){
-            _Log.warn("accessToken失效，尝试重新登录");
+            $7DTD._Log.warn("accessToken失效，尝试重新登录");
             if (!loginUser()) return "";
         }
         return webUser.accessToken;
@@ -136,7 +136,7 @@ public class KitNet {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/user_act_unban","POST",headers,"{\"steamid\":\""+steamID+"\",\"accessToken\":\""+getToken()+"\"}");
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
 
@@ -148,7 +148,7 @@ public class KitNet {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json;charset=UTF-8");
         String response = Net.sendData(url + "cgi/user_act_kick","POST",headers,"{\"steamid\":\""+steamID+"\",\"accessToken\":\""+getToken()+"\",\"reason\":\"command\"}");
-        _Log.debug(response);
+        $7DTD._Log.debug(response);
         return checkResult(response);
     }
 
@@ -164,7 +164,7 @@ public class KitNet {
         PostData postData = new PostData();
         postData.add("accessToken",getToken());
         postData.add("steamid",steamID);
-        _Log.debug(postData.toJson());
+        $7DTD._Log.debug(postData.toJson());
         String response = Net.sendData(url + "cgi/user_detail","POST",headers,postData.toJson());
         //_Log.debug(response);
         Gson gson = new Gson();
@@ -177,7 +177,7 @@ public class KitNet {
         postData.add("accessToken",getToken());
         postData.add("steamid",steamID);
         postData.add("loc",index);
-        _Log.debug(postData.toJson());
+        $7DTD._Log.debug(postData.toJson());
         String response = Net.sendData(url + "cgi/user_act_removeitem_bag","POST",headers,postData.toJson());
         //_Log.debug(response);
         return checkResult(response);

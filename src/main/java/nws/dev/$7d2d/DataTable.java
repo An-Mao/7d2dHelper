@@ -2,8 +2,8 @@ package nws.dev.$7d2d;
 
 import nws.dev.$7d2d.config.Config;
 import nws.dev.$7d2d.data.ConfigData;
-import nws.dev.$7d2d.system._File;
-import nws.dev.$7d2d.system._Pack;
+import nws.dev.core.pack._Pack;
+import nws.dev.core.system._File;
 
 public class DataTable {
     public static final String Dir = _File.getFileFullPathWithRun("config");
@@ -18,7 +18,7 @@ public class DataTable {
     public static final String ServerConfigDir = Dir + "/ServerConfig";
     public static final String ServerDataDir = DataDir + "/server";
 
-    public static final String LogDir = Dir + "/log";
+    public static final String LogDir = DataDir + "/log";
     public static final String UserDir = Dir + "/user";
     //public static final String UserItemDir = Dir + "userItem";
     //public static final String SingInDir = Dir + "singIn";

@@ -1,5 +1,6 @@
 package nws.dev.$7d2d.command.arg;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
 import nws.dev.$7d2d.command.QQExCommand;
@@ -8,16 +9,16 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.QQHelper;
 import nws.dev.$7d2d.net.Urls;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Byte;
-import nws.dev.$7d2d.system._Log;
+import nws.dev.core.bytes._Byte;
 
 import java.io.File;
 import java.util.List;
 
-@Command(name = "查询配方",permission = Permission.User,type = CommandType.Group,desc = "查询配方 物品名称")
+@Command(name = RequestRecipeCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.Group,desc = "查询配方 物品名称")
 public class RequestRecipeCommand extends QQExCommand {
+    public static final String COMMAND_NAME = "查询配方";
     public RequestRecipeCommand(QQData.Message message, ServerCore serverCore) {
-        super("requestRecipe", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class RequestRecipeCommand extends QQExCommand {
             sendMsg("物品名称不能为空");
             return false;
         }
-        _Log.info("查询配方");
+        $7DTD._Log.info("查询配方");
         StringBuilder s = new StringBuilder();
         for (int i = 1; i < args.length; i++) {
             if (s.isEmpty()) s.append(args[i]);
@@ -43,7 +44,7 @@ public class RequestRecipeCommand extends QQExCommand {
         }
         String r = server.gameInfo.getRecipeInfo(s.toString());
         if (server.serverData.imageRecipes()){
-            String md5 = server.imageCache+"/"+ _Byte.getMD5(r)+".png";
+            String md5 = server.imageCache+"/"+ _Byte.getMd5(r)+".png";
             /*
             HashMap<String,String> map = new HashMap<>();
             map.put("file",convertPath(md5));

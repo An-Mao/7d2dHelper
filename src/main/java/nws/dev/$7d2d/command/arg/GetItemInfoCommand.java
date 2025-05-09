@@ -1,5 +1,6 @@
 package nws.dev.$7d2d.command.arg;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
@@ -9,16 +10,16 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.QQHelper;
 import nws.dev.$7d2d.net.Urls;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Byte;
-import nws.dev.$7d2d.system._Log;
+import nws.dev.core.bytes._Byte;
 
 import java.io.File;
 import java.util.List;
 
-@Command(name = "查询物品",permission = Permission.User,type = CommandType.Group,desc = "查询物品 物品名称")
+@Command(name = GetItemInfoCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.Group,desc = "查询物品 物品名称")
 public class GetItemInfoCommand extends QQExCommand {
+    public static final String COMMAND_NAME = "查询物品";
     public GetItemInfoCommand(QQData.Message message, ServerCore serverCore) {
-        super("getItemInfo", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override
@@ -41,12 +42,12 @@ public class GetItemInfoCommand extends QQExCommand {
             if (s.isEmpty()) s.append(args[i]);
             else s.append(" ").append(args[i]);
         }
-        _Log.info("获取物品信息");
+        $7DTD._Log.info("获取物品信息");
 
         String r = server.gameInfo.getItemInfo(s.toString());
 
         if (server.serverData.imageItem()){
-            String md5 = DataTable.ImageCache+"/"+ _Byte.getMD5(r)+".png";
+            String md5 = DataTable.ImageCache+"/"+ _Byte.getMd5(r)+".png";
             if (!new File(md5).exists()) server.drawConfig.createImage(server.fontConfig,List.of(r.split("\\\\n"))).save(md5);
 
             QQHelper.sendMsg(Urls.qqSendGroupMsg,QQHelper.data.replace("<group>",this.group).replace("<file>",convertPathToUri(md5)));

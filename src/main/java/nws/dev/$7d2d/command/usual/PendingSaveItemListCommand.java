@@ -7,12 +7,13 @@ import nws.dev.$7d2d.config.UserConfig;
 import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._File;
+import nws.dev.core.system._File;
 
-@Command(name = "待审核跟档列表",permission = Permission.ServerAdmin,type = CommandType.Private)
+@Command(name = PendingSaveItemListCommand.COMMAND_NAME,permission = Permission.ServerAdmin,type = CommandType.Private)
 public class PendingSaveItemListCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "待审核跟档列表";
     public PendingSaveItemListCommand(QQData.Message message, ServerCore serverCore) {
-        super("pendingSaveItemList", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

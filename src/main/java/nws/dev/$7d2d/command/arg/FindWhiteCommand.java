@@ -1,17 +1,18 @@
 package nws.dev.$7d2d.command.arg;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
 import nws.dev.$7d2d.command.QQExCommand;
 import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
-@Command(name = "查找白名单",permission = Permission.User,type = CommandType.Group,desc = "查找白名单 物品名称")
+@Command(name = FindWhiteCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.Group,desc = "查找白名单 物品名称")
 public class FindWhiteCommand extends QQExCommand {
+    public static final String COMMAND_NAME = "查找白名单";
     public FindWhiteCommand(QQData.Message message, ServerCore serverCore) {
-        super("findWhite", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class FindWhiteCommand extends QQExCommand {
             sendMsg("物品名称不能为空");
             return false;
         }
-        _Log.info("查找白名单");
+        $7DTD._Log.info("查找白名单");
         StringBuilder s = new StringBuilder();
         int[] c = {0};
         server.acItem.getDatas().forEach((k, v) -> {

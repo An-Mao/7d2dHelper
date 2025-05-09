@@ -1,9 +1,9 @@
 package nws.dev.$7d2d.event;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.helper.QQHelper;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
-import nws.dev.$7d2d.system._ThreadMonitor;
+import nws.dev.core.system._ThreadMonitor;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,10 +18,10 @@ public class Events {
                 Thread.sleep(3000);
                 boolean[] refresh = {false};
                 if (day != Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
-                    _Log.info("刷新事件");
+                    $7DTD._Log.info("刷新事件");
                     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
                     refresh[0] = true;
-                    _Log.SetLogFileName();
+                    $7DTD.refresh();
                 }
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 String k = sdf.format(new Date());
@@ -37,7 +37,7 @@ public class Events {
                     }
                 });
             } catch (InterruptedException e) {
-                _Log.error("时钟异常",e.getMessage());
+                $7DTD._Log.error("时钟异常",e.getMessage());
                 break;
             }
         }

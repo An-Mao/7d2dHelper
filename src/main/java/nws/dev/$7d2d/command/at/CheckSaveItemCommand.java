@@ -9,16 +9,17 @@ import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.OtherHelper;
 import nws.dev.$7d2d.server.ServerCore;
 
-@Command(name = "查看跟档物品",permission = Permission.ServerAdmin,type = CommandType.Group,desc = "查看跟档物品@QQ",priority = 990)
+@Command(name = CheckSaveItemCommand.COMMAND_NAME,permission = Permission.ServerAdmin,type = CommandType.Group,desc = "查看跟档物品@QQ",priority = 990)
 public class CheckSaveItemCommand extends QQAtCommand {
+    public static final String COMMAND_NAME = "查看跟档物品";
     public CheckSaveItemCommand(QQData.Message message, ServerCore serverCore) {
-        super("checkSaveItem",message,serverCore);
+        super(COMMAND_NAME,message,serverCore);
     }
 
     @Override
     public boolean groupMsg() {
             if (this.target.isEmpty()) {
-                sendMsg("指令格式错误，正确格式：查看跟档物品 @qq");
+                //sendMsg("指令格式错误，正确格式：查看跟档物品 @qq");
                 return false;
             }else {
                 UserConfig config = server.getUserData(this.target);

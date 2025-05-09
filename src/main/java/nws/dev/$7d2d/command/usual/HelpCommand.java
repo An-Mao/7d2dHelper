@@ -1,15 +1,16 @@
 package nws.dev.$7d2d.command.usual;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.*;
 import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
-@Command(name = "帮助",permission = Permission.User,type = CommandType.All)
+@Command(name = HelpCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.All)
 public class HelpCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "帮助";
     public HelpCommand(QQData.Message message, ServerCore serverCore) {
-        super("help",message,serverCore);
+        super(COMMAND_NAME,message,serverCore);
     }
     @Override
     public boolean runCommand() {
@@ -24,7 +25,7 @@ public class HelpCommand extends QQUsualCommand {
 
     @Override
     public boolean privateMsg() {
-        _Log.debug("获取帮助");
+        $7DTD._Log.debug("获取帮助");
         Permission permission = Permission.getPermission(qq,server);
         StringBuilder stringBuilder = new StringBuilder("-----当前支持指令-----");
         CommandRegistryNew.getCommands().forEach((s, priorityQueue) -> {
@@ -39,14 +40,14 @@ public class HelpCommand extends QQUsualCommand {
             }
         });
         stringBuilder.append("\\n=============\\n【】为必须参数，（）为可选参数，用空格隔开。");
-        _Log.debug(stringBuilder.toString());
+        $7DTD._Log.debug(stringBuilder.toString());
         sendMsg(stringBuilder.toString());
         return true;
     }
 
     @Override
     public boolean groupMsg() {
-        _Log.debug("获取帮助");
+        $7DTD._Log.debug("获取帮助");
         Permission permission = Permission.getPermission(qq,server);
         StringBuilder stringBuilder = new StringBuilder("-----当前支持指令-----");
         CommandRegistryNew.getCommands().forEach((s, priorityQueue) -> {

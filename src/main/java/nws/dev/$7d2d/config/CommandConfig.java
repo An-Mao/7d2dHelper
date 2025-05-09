@@ -9,33 +9,9 @@ public class CommandConfig extends _JsonConfig<HashMap<String, Boolean>> {
     public CommandConfig(String filePath) {
         super(filePath, """
                 {
-                    "help": true,
-                    "adminHelp":true,
-                    "signHelp":true,
-                    "kickSelf":true,
-                    "whiteList":false,
-                    "eventList":true,
-                    "bind":true,
-                    "serverInfo":true,
-                    "getNewPlayerGift":true,
-                    "sign":true,
-                    "killSelf":true,
-                    "lookSelf":true,
-                    "requestUnban":true,
-                    "requestSaveItem":true,
-                    "sendSaveItem":true,
-                    "receiveGift":true,
-                    "requestInfo":true,
-                    "applyWhite":true,
-                    "requestWhite":true,
-                    "agreeUnban":true,
-                    "buySaveItemNum":true,
-                    "findWhite":true,
-                    "getItemInfo":true,
-                    "findItem":true,
-                    "requestRecipe":true
+                    "帮助": true
                 }
-                """, new TypeToken<>(){});
+                """, new TypeToken<>(){},false);
     }
 
     @Override

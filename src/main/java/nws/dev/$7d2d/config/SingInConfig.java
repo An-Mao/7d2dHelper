@@ -1,9 +1,9 @@
 package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.json._JsonConfig;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class SingInConfig extends _JsonConfig<HashMap<String, Long>> {
         //给予绑定者额外奖励，并重置绑定对象
         SingInPlusConfig o = SingInPlusConfig.geto(serverCore,steamid);
         if (!o.getDatas().steamid().equals("-1") && o.getDatas().time().equals(day)){
-            _Log.debug("模拟奖励 1");
+            $7DTD._Log.debug("模拟奖励 1");
 
             if (serverCore.botNet.getOnlinePlayerBySteamID(o.getDatas().steamid()) == null){
                 s.append("\\n对方不在线，无法获取额外签到奖励");

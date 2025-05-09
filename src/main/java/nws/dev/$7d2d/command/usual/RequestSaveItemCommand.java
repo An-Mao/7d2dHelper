@@ -9,10 +9,11 @@ import nws.dev.$7d2d.server.ServerCore;
 
 import java.util.List;
 
-@Command(name = "申请跟档",permission = Permission.User,type = CommandType.All)
+@Command(name = RequestSaveItemCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.All)
 public class RequestSaveItemCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "申请跟档";
     public RequestSaveItemCommand(QQData.Message message, ServerCore serverCore) {
-        super("requestSaveItem", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override

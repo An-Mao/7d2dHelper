@@ -1,5 +1,6 @@
 package nws.dev.$7d2d.command.usual;
 
+import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
 import nws.dev.$7d2d.command.QQUsualCommand;
@@ -9,14 +10,14 @@ import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.helper.OtherHelper;
 import nws.dev.$7d2d.server.ServerCore;
-import nws.dev.$7d2d.system._Log;
 
 import java.util.ArrayList;
 
-@Command(name = "申请解封",permission = Permission.User,type = CommandType.Group)
+@Command(name = RequestUnbanCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.Group)
 public class RequestUnbanCommand extends QQUsualCommand {
+    public static final String COMMAND_NAME = "申请解封";
     public RequestUnbanCommand(QQData.Message message, ServerCore serverCore) {
-        super("requestUnban", message,serverCore);
+        super(COMMAND_NAME, message,serverCore);
     }
 
     @Override
@@ -30,11 +31,11 @@ public class RequestUnbanCommand extends QQUsualCommand {
     }
 
     public boolean requestUnban() {
-        _Log.info("申请解封");
+        $7DTD._Log.info("申请解封");
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()) {
             if (server.banUser.containsKey(this.qq)){
-                _Log.debug("已申请解封");
+                $7DTD._Log.debug("已申请解封");
                 sendMsg( "您已申请过解封，当前已有"+server.banUser.get(this.qq).size()+"个群员为您同意解封");
                 return true;
             }
@@ -47,7 +48,7 @@ public class RequestUnbanCommand extends QQUsualCommand {
                 sendMsg( s);
             }else sendMsg( "未查询到您的封禁记录");
         } else {
-            _Log.debug("未绑定账号");
+            $7DTD._Log.debug("未绑定账号");
             sendMsg( "未绑定账号，请先绑定账号");
         }
         return true;
