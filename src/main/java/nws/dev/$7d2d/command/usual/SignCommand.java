@@ -35,10 +35,7 @@ public class SignCommand extends QQUsualCommand {
             String s = singInConfig.sign(server,config.getSteamID());
             $7DTD._Log.debug(s);
             sendMsg(s);
-        } else {
-            $7DTD._Log.debug("未绑定账号");
-            sendMsg("未绑定账号，请先绑定账号");
-        }
+        } else sendMsg("usual.command.error.not_bind");
         return true;
 
     }

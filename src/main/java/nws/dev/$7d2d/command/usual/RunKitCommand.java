@@ -22,13 +22,13 @@ public class RunKitCommand extends QQUsualCommand {
     @Override
     public boolean privateMsg() {
         if (System.currentTimeMillis() - server.wt < 60000) {
-            if (server.restartThread.isAlive()) sendMsg("重启进程运行中，请勿执行此指令");
+            if (server.restartThread.isAlive()) sendMsg("run_kit.command.error.running");
             else {
-                sendMsg("即将运行kit");
+                sendMsg("run_kit.command.start");
                 server.runKitExe();
             }
         } else {
-            sendMsg("您正在运行高危指令，如果确实想运行，请在60秒内再发一次此指令");
+            sendMsg("run_kit.command.step.1");
             server.wt = System.currentTimeMillis();
         }
         return true;

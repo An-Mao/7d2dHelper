@@ -32,21 +32,21 @@ public class SendSaveItemCommand extends QQUsualCommand {
     public boolean sendSaveItem() {
         UserConfig config = server.getUserData(this.qq);
         if (!config.isBind()) {
-            sendMsg("未绑定账号，请先绑定账号");
+            sendMsg("usual.command.error.not_bind");
             return true;
         }
         if (!config.getDatas().canExtractSaveItem){
-            sendMsg("无法提取物品，请等待服主核验。");
+            sendMsg("send_save_item.command.error.need_check");
             return true;
         }
         UserConfig.RecordItem recordItem = config.getRecordItem(server);
         if (recordItem.getDatas().isEmpty()) {
-            sendMsg("没有需要提取的物品");
+            sendMsg("send_save_item.command.error.not_item");
             return true;
         }
         BotData.PlayerInfo info = server.botNet.getOnlinePlayerBySteamID(config.getSteamID());
         if (info == null) {
-            sendMsg("请在线后再试");
+            sendMsg("usual.command.error.not_online");
             return true;
         }
         List<PlayerInfoData.ItemData> success = new ArrayList<>();
@@ -59,7 +59,7 @@ public class SendSaveItemCommand extends QQUsualCommand {
         recordItem.save();
         config.getDatas().canExtractSaveItem = false;
         config.save();
-        sendMsg("成功提取"+success.size()+"个物品");
+        sendFormatMsg("send_save_item.command.success",success.size());
         return true;
     }
 }

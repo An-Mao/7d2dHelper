@@ -29,7 +29,7 @@ public class RequestSaveItemCommand extends QQUsualCommand {
     public boolean requestSaveItem() {
         UserConfig config = server.getUserData(this.qq);
         if (!config.isBind()) {
-            sendMsg("未绑定账号，请先绑定账号");
+            sendMsg("usual.command.error.not_bind");
             return true;
         }
 
@@ -37,44 +37,44 @@ public class RequestSaveItemCommand extends QQUsualCommand {
 
         UserConfig.RecordItem recordItem = config.getRecordItem(server);
         if (!recordItem.getDatas().isEmpty()) {
-            sendMsg("您已申请过跟档，如果想要修改，请先提取物品。");
+            sendMsg("request_save_item.command.error.has");
             return true;
         }
         KitData.GsList list = server.kitNet.getGsList();
         if (list.result() == 1) {
             for (KitData.GsInfo info : list.list()) {
                 if (info.status() != 1) {
-                    sendMsg("服务器状态异常，请稍后再试");
+                    sendMsg("request_save_item.command.error.server");
                     return true;
                 }
             }
         }else {
-            sendMsg("获取服务器状态异常，请稍后再试");
+            sendMsg("request_save_item.command.error.net");
             return true;
         }
         int recordItemLimit = server.serverData.recordItemDefault() + config.getRecordItemLimit();
         if (System.currentTimeMillis() - server.saveItem.getOrDefault(this.qq, 0L) > 30000) {
             server.saveItem.put(this.qq, System.currentTimeMillis());
-            sendMsg("请确认是否已将物品上的模组卸下，您可以跟档" + recordItemLimit + "个物品，如果确认无误请再次发送此指令。");
+            sendFormatMsg("request_save_item.command.step.1", recordItemLimit);
             return true;
         }
         server.saveItem.remove(this.qq);
         BotData.PlayerInfo info = server.botNet.getOnlinePlayerBySteamID(config.getSteamID());
         if (info != null) {
-            sendMsg("请离线后再试");
+            sendMsg("request_save_item.command.error.online");
             return true;
         }
         PlayerInfoData playerInfoData = server.kitNet.getBagItems(server.kitNet.formatSteamId(config.getSteamID()));
         if (playerInfoData == null) {
-            sendMsg("获取背包物品失败，请重试");
+            sendMsg("request_save_item.command.error.bag");
             return true;
         }
         if (playerInfoData.bag().size() > recordItemLimit) {
-            sendMsg("背包物品过多，请清理后再试");
+            sendMsg("request_save_item.command.error.bag.more");
             return true;
         }
         if (playerInfoData.bag().isEmpty()) {
-            sendMsg("背包物品为空，请检查");
+            sendMsg("request_save_item.command.error.bag.empty");
             return true;
         }
         List<PlayerInfoData.ItemData> items = playerInfoData.bag();
@@ -88,7 +88,7 @@ public class RequestSaveItemCommand extends QQUsualCommand {
         config.getDatas().canExtractSaveItem = false;
         config.save();
         int success = recordItem.getDatas().size();
-        sendMsg("物品记录完成，成功:" + success + " ，失败:" + (items.size() - success) + "。");
+        sendFormatMsg("request_save_item.command.success", success , (items.size() - success));
         return true;
     }
 }

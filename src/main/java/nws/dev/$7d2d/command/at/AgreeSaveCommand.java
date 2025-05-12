@@ -25,10 +25,9 @@ public class AgreeSaveCommand extends QQAtCommand {
             if (config.isBind()) {
                 config.getDatas().canExtractSaveItem = true;
                 config.save();
-                sendMsg("已同意跟档申请");
-            } else sendMsg("对方未绑定账号");
+                sendMsg("agree_save.command.success");
+            } else sendMsg("usual.command.error.target_not_bind");
         }
-
         return true;
     }
 

@@ -28,19 +28,14 @@ public class RequestWhiteCommand extends QQExCommand {
 
     private boolean requestWhite() {
         if (rawArg.isEmpty()) {
-            sendMsg("指令格式错误，正确格式：查询白名单 白名单名称");
+            sendMsg("request_white.command.error.empty");
             return false;
         }
         $7DTD._Log.info("查询白名单");
         ACItemsData data = server.acItem.get(rawArg);
         if (data == null) data = server.autoWhiteList.getDatas().get(rawArg);
-        if (data == null) {
-            $7DTD._Log.debug("未找到此白名单");
-            sendMsg( "未找到此白名单，请确认此白名单是否存在");
-        } else {
-            $7DTD._Log.debug("白名单查询成功");
-            sendMsg( data.toString());
-        }
+        if (data == null) sendMsg( "request_white.command.error.not_found");
+        else sendMsg( data.toString());
         return true;
     }
 

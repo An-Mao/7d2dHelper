@@ -22,13 +22,13 @@ public class RestartServerCommand extends QQUsualCommand {
     @Override
     public boolean privateMsg() {
         if (System.currentTimeMillis() - server.wt < 60000) {
-            if (server.restartThread.isAlive()) sendMsg("重启进程运行中，请勿执行此指令");
+            if (server.restartThread.isAlive()) sendMsg("restart_server.command.error.running");
             else {
-                sendMsg("即将完全重启服务器");
+                sendMsg("restart_server.command.start");
                 server.restartThread.start();
             }
         } else {
-            sendMsg("您正在运行高危指令，如果确实想运行，请在60秒内再发一次此指令");
+            sendMsg("restart_server.command.step.1");
             server.wt = System.currentTimeMillis();
         }
         return true;

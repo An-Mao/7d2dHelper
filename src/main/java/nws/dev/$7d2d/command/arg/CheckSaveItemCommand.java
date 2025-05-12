@@ -30,7 +30,7 @@ public class CheckSaveItemCommand extends QQExCommand {
         if (isAdmin()) {
             String target = args[1];
             if (target.isEmpty()) {
-                sendMsg("指令格式错误，正确格式：查看跟档物品 qq");
+                sendMsg("check_save_item.command.error.args_number");
                 return false;
             }else {
                 UserConfig config = server.getUserData(target);
@@ -38,10 +38,9 @@ public class CheckSaveItemCommand extends QQExCommand {
                     server.playerSaveItem.remove(this.qq);
                     server.playerSaveItemIndex.remove(this.qq);
                     UserConfig.RecordItem recordItem = config.getRecordItem(server);
-                    if (recordItem.getDatas().isEmpty()) {
-                        sendMsg("对方没有跟档物品");
-                    }else {
-                        StringBuilder s = new StringBuilder("对方跟档物品:");
+                    if (recordItem.getDatas().isEmpty()) sendMsg("check_save_item.command.error.target_not_have_item");
+                    else {
+                        StringBuilder s = new StringBuilder();
                         int[] c = {0};
                         recordItem.getDatas().forEach((itemData) ->{
                             if (c[0] < 20) {
@@ -54,9 +53,9 @@ public class CheckSaveItemCommand extends QQExCommand {
                             server.playerSaveItemIndex.put(this.qq,20);
                             s.append("\\n...\\n发送【下一页】继续查看");
                         }
-                        sendMsg(s.toString());
+                        sendFormatMsg("check_save_item.command.target_items",s.toString());
                     }
-                } else sendMsg("对方未绑定账号");
+                } else sendMsg("usual.command.error.target_not_bind");
             }
         }
         return true;

@@ -30,42 +30,26 @@ public class ApplyWhiteCommand extends QQExCommand {
 
     private boolean applyWhite() {
         if (this.rawArg.isEmpty()) {
-            sendMsg("指令格式错误，正确格式：申请白名单 白名单名称");
+            sendMsg("apply_white.command.error.args_number");
             return false;
         }
         $7DTD._Log.info("申请白名单");
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()) {
-            $7DTD._Log.debug("已绑定账号");
             BotData.PlayerInfo info = server.botNet.getOnlinePlayerBySteamID(config.getSteamID());
-            if (info == null) {
-                $7DTD._Log.debug("未找到玩家");
-                sendMsg( "未找到玩家，请确认玩家是否在线");
-            } else {
+            if (info == null) sendMsg("usual.command.error.not_online");
+            else {
                 ACItemsData data = server.acItem.get(rawArg);
                 if (data == null) data = server.autoWhiteList.getDatas().get(rawArg);
-                if (data == null) {
-                    $7DTD._Log.debug("未找到此白名单");
-                    sendMsg( "未找到此白名单，请确认此白名单是否存在");
-                } else {
+                if (data == null) sendMsg("apply_white.command.error.not_found");
+                else {
                     if (data.allNeed() ? info.point() >= data.point() && info.level() >= data.level() : info.point() >= data.point() || info.level() >= data.level()) {
-                        $7DTD._Log.debug("白名单检测成功");
-                        if (server.acNet.addWhite(info.userid(), data.getFormatItems())) {
-                            sendMsg( "白名单添加成功");
-                        } else {
-                            sendMsg( "白名单添加失败，网络异常");
-                        }
-                    } else {
-                        sendMsg( "白名单添加失败，你未满足白名单要求：" + "\\n需要等级：" + data.level() + "\\n需要积分：" + data.point() + "\\n" + (data.allNeed() ? "需要等级和积分全部满足" : "需要等级或积分任一满足"));
-
-                    }
-
+                        if (server.acNet.addWhite(info.userid(), data.getFormatItems())) sendMsg("apply_white.command.success");
+                        else sendMsg("apply_white.command.error.net");
+                    } else sendFormatMsg( "apply_white.command.error.not_met",  data.level() , data.point(), (data.allNeed() ? "需要等级和积分全部满足" : "需要等级或积分任一满足"));
                 }
             }
-        } else {
-            $7DTD._Log.debug("未绑定账号");
-            sendMsg( "未绑定账号，请先绑定账号");
-        }
+        } else sendMsg("usual.command.error.not_bind");
         return true;
     }
 

@@ -21,7 +21,7 @@ public class ClearServerCommand extends QQUsualCommand {
 
     @Override
     public boolean privateMsg() {
-        sendMsg("即将清理服务器");
+        sendMsg("clear_server.command.start");
         server.restart();
         return true;
     }

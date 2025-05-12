@@ -2,7 +2,7 @@ package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
 import nws.dev.$7d2d.data.RaffleData;
-import nws.dev.$7d2d.json._JsonConfig;
+import nws.dev.core.json._JsonConfig;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ public class RaffleConfig extends _JsonConfig<RaffleData> {
     public RaffleConfig(String filePath) {
         super(filePath, """
                 {
-                    "enabled": true,
+                    "enable": true,
                     "point":100000,
                     "cooldown":600,
                     "items":[

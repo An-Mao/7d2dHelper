@@ -4,15 +4,12 @@ import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.DataTable;
 import nws.dev.$7d2d.data.ServerData;
 import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.$7d2d.server.ServerList;
 import nws.dev.core.system._File;
 
-import java.awt.*;
 import java.util.HashMap;
 
 public class Configs {
-    private static final Font EmptyFont = new Font("Arial", Font.PLAIN, 12);
-    public static Font font;
-
     public static final HashMap<String,String> groupServer = new HashMap<>();
 
 
@@ -27,11 +24,11 @@ public class Configs {
     }
 
     public static void LoadServerData() {
-        ServerCore.LIST.clear();
+        ServerList.LIST.clear();
         _File.getFiles(DataTable.ServerListDir,".json").forEach(path -> {
             $7DTD._Log.debug("file:"+path.getFileName().toString());
             ServerData serverDataIO = new ServerDataIO(path.getFileName().toString()).getDatas();
-            if (serverDataIO != null) ServerCore.LIST.put(getFileNameWithoutExtension(path.getFileName().toString()),new ServerCore(serverDataIO));
+            if (serverDataIO != null) ServerList.LIST.put(getFileNameWithoutExtension(path.getFileName().toString()),new ServerCore(serverDataIO));
         });
     }
 

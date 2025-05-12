@@ -27,11 +27,11 @@ public class FindItemCommand extends QQExCommand {
 
     private boolean findItem() {
         if (argCheck(2)) {
-            sendMsg("指令格式错误，正确格式：物品信息 物品名称");
+            sendMsg("find_item.command.error.args_number");
             return false;
         }
         if (args[1].isEmpty()){
-            sendMsg("物品名称不能为空");
+            sendMsg("find_item.command.error.empty");
             return false;
         }
         $7DTD._Log.info("查找物品");

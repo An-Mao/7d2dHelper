@@ -1,6 +1,5 @@
 package nws.dev.$7d2d.command.usual;
 
-import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
 import nws.dev.$7d2d.command.QQUsualCommand;
@@ -31,16 +30,9 @@ public class LookSelfCommand extends QQUsualCommand {
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()) {
             BotData.PlayerInfo info = server.botNet.getOnlinePlayerBySteamID(config.getSteamID());
-            if (info == null) {
-                $7DTD._Log.debug("未找到玩家");
-                sendMsg( "未找到玩家，请确认玩家是否在线");
-            } else {
-                sendMsg( info.toString());
-            }
-        }else {
-            $7DTD._Log.debug("未绑定账号");
-            sendMsg( "未绑定账号，请先绑定账号");
-        }
+            if (info == null) sendMsg( "usual.command.error.not_online");
+            else sendMsg( info.toString());
+        }else sendMsg( "usual.command.error.not_bind");
         return true;
     }
 }

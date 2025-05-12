@@ -1,7 +1,7 @@
 package nws.dev.$7d2d.config;
 
 import nws.dev.$7d2d.$7DTD;
-import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.$7d2d.server.ServerConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,13 +22,13 @@ import java.util.List;
 
 public class GameInfo {
     //public static final GameInfo I = new GameInfo(Config.I.getDatas().GameDir);
-    private final ServerCore serverCore;
+    private final ServerConfig serverCore;
     private final String gameDir;
     private final ArrayList<String> ModFiles = new ArrayList<>();
     private final HashMap<String,Item> items = new HashMap<>();
     private final HashMap<String,Recipe> recipes = new HashMap<>();
     private final HashMap<String,String> language = new HashMap<>();
-    public GameInfo(ServerCore serverCore) {
+    public GameInfo(ServerConfig serverCore) {
         this.serverCore = serverCore;
         this.gameDir = serverCore.serverData.GameDir();
         this.ModFiles.add(this.gameDir + "/Data/");

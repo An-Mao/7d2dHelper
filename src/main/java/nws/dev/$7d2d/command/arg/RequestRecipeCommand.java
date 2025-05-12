@@ -33,7 +33,7 @@ public class RequestRecipeCommand extends QQExCommand {
 
     private boolean requestRecipe() {
         if (args[1].isEmpty()){
-            sendMsg("物品名称不能为空");
+            sendMsg("find_item.command.error.empty");
             return false;
         }
         $7DTD._Log.info("查询配方");
@@ -45,15 +45,6 @@ public class RequestRecipeCommand extends QQExCommand {
         String r = server.gameInfo.getRecipeInfo(s.toString());
         if (server.serverData.imageRecipes()){
             String md5 = server.imageCache+"/"+ _Byte.getMd5(r)+".png";
-            /*
-            HashMap<String,String> map = new HashMap<>();
-            map.put("file",convertPath(md5));
-            map.put("subType","0");
-            map.put("id","40000");
-            _Log.debug(r);
-
-             */
-
             if (!new File(md5).exists()) server.drawConfig.createImage(server.fontConfig,List.of(r.split("\\\\n"))).save(md5);
             QQHelper.sendMsg(Urls.qqSendGroupMsg,QQHelper.data.replace("<group>",this.group).replace("<file>",convertPathToUri(md5)));
             //QQHelper.sendGroupMsg(this.group,QQData.Msg.create(QQData.MsgType.Image, "file",convertPath(md5)));

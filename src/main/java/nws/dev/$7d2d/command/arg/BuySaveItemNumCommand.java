@@ -29,43 +29,38 @@ public class BuySaveItemNumCommand extends QQExCommand {
 
     private boolean buySaveItemNum() {
         if (argCheck(2)) {
-            sendMsg("指令格式错误，正确格式：购买跟档物品数量 数量");
+            sendMsg("buy_save_item_num.command.error.args_number");
             return false;
         }
         $7DTD._Log.info("提高跟档物品数量");
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()) {
-            $7DTD._Log.debug("已绑定账号");
             if (config.getRecordItemLimit() >= server.serverData.recordItemLimit()){
-                $7DTD._Log.debug("达到上限");
-                sendMsg( "您的跟档物品数量已达到上限");
+                sendMsg("buy_save_item_num.command.error.limit");
                 return true;
             }
             BotData.PlayerInfo info = server.botNet.getOnlinePlayerBySteamID(config.getSteamID());
             if (info == null) {
-                sendMsg("请在线后再试");
+                sendMsg("usual.command.error.not_online");
                 return true;
             }
             int n = Integer.parseInt(args[1]);
             if (config.getRecordItemLimit() + n >= server.serverData.recordItemLimit()) n = server.serverData.recordItemLimit() - config.getRecordItemLimit();
             int p  = n * server.serverData.recordItemPoint();
             if (p <= 0) {
-                sendMsg("数据错误，请重新尝试");
+                sendMsg("buy_save_item_num.command.error.data");
                 return true;
             }
             if (info.point() < p){
-                sendMsg("您的积分不足");
+                sendMsg("usual.command.error.point_insufficient");
                 return true;
             }
             if(server.botNet.sendPoint(config.getSteamID(), -p)){
                 config.getDatas().recordItemLimit = config.getRecordItemLimit() + n;
                 config.save();
-                sendMsg( "已增加"+n+"个跟档物品数量，当前数量"+config.getRecordItemLimit());
-            }else sendMsg("添加失败，请重新尝试");
-        } else {
-            $7DTD._Log.debug("未绑定账号");
-            sendMsg( "未绑定账号，请先绑定账号");
-        }
+                sendFormatMsg("buy_save_item_num.command.success",n,config.getRecordItemLimit());
+            }else sendMsg("buy_save_item_num.command.error.net");
+        } else sendMsg("usual.command.error.not_bind");
         return true;
     }
 }

@@ -1,6 +1,5 @@
 package nws.dev.$7d2d.command.at;
 
-import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.command.Command;
 import nws.dev.$7d2d.command.CommandType;
 import nws.dev.$7d2d.command.QQAtCommand;
@@ -29,10 +28,9 @@ public class SignCommand extends QQAtCommand {
                 if (c.isBind()) {
                     SingInConfig singInConfig = server.getSignData(this.qq);
                     String s = singInConfig.sign(server,config.getSteamID(), c.getSteamID());
-                    $7DTD._Log.debug(s);
                     sendMsg(s);
-                } else sendMsg("对方未绑定账号");
-            } else sendMsg("未绑定账号，请先绑定账号");
+                } else sendMsg("usual.command.error.target_not_bind");
+            } else sendMsg("usual.command.error.not_bind");
 
         return true;
     }

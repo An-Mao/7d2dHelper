@@ -27,7 +27,7 @@ public class FindWhiteCommand extends QQExCommand {
 
     private boolean findWhite() {
         if (rawArg.isEmpty()){
-            sendMsg("物品名称不能为空");
+            sendMsg("find_item.command.error.empty");
             return false;
         }
         $7DTD._Log.info("查找白名单");
@@ -75,11 +75,11 @@ public class FindWhiteCommand extends QQExCommand {
         });
 
         if (c[0] > 20) {
-            sendMsg("结果数量过多，请提供更多字词并重新查找");
+            sendMsg("find_white.command.error.too_more");
             return true;
         }
-        if (s.isEmpty()) sendMsg("未找到包含此物品的白名单，请检查是否有错误。");
-        else sendMsg("包含类似物品的白名单："+ s);
+        if (s.isEmpty()) sendMsg("find_white.command.error.not_found");
+        else sendFormatMsg("find_white.command.success", s.toString());
         return true;
     }
 }

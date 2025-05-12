@@ -21,9 +21,9 @@ public class ReloadGameFileCommand extends QQUsualCommand {
 
     @Override
     public boolean privateMsg() {
-        sendMsg("开始重新读取游戏文件");
+        sendMsg("reload_game_file.command.start");
         server.gameInfo.init();
-        sendMsg("重新读取游戏文件完成");
+        sendMsg("reload_game_file.command.done");
         return true;
     }
 }

@@ -1,5 +1,7 @@
 package nws.dev.$7d2d.data;
 
+import org.jetbrains.annotations.NotNull;
+
 public class BotData {
     public record UserList(int code,String msg,int count,UserInfo[] data) {}
 
@@ -20,7 +22,7 @@ public class BotData {
 
     public record PlayerInfo(int entityid,String playername,String userid,String platformid,int level,int health,int skillpoint,String pos,String ip,int killzombie,int killplayer,int killed,int priv,int ping,int point) {
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "玩家名称："+playername
                     + "\\n等级："+level
                     + "\\n血量："+health
@@ -35,7 +37,7 @@ public class BotData {
     public record ItemList(int code,String msg,int count,ItemInfo[] data) {}
     public record GameState(int result,String day,String hour,String min,int players,int zombies,int animals) {
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             if (result == 1) return "游戏时间：第"+day+"天 "+hour+"小时"+min+"分钟\\n当前僵尸数："+zombies+"\\n当前动物数："+animals;
             return "";
         }

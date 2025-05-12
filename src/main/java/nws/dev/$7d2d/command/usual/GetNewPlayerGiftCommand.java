@@ -30,16 +30,9 @@ public class GetNewPlayerGiftCommand extends QQUsualCommand {
         $7DTD._Log.info("领取新手礼包");
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()){
-            $7DTD._Log.debug("已绑定账号");
-            if (config.isReward("NewbiePack"))
-                sendMsg( "您已领取过新手礼包");
-            else {
-                sendMsg( server.botNet.giveReward(config,"NewbiePack"));
-            }
-        }else {
-            $7DTD._Log.debug("未绑定账号");
-            sendMsg( "未绑定账号，请先绑定账号");
-        }
+            if (config.isReward("NewbiePack")) sendMsg("get_new_player_gift.command.error.has");
+            else sendMsg(server.botNet.giveReward(config,"NewbiePack"));
+        }else sendMsg("usual.command.error.not_bind");
         return true;
     }
 }

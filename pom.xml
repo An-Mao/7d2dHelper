@@ -6,7 +6,7 @@
 
     <groupId>nws.dev</groupId>
     <artifactId>7d2d</artifactId>
-    <version>25.05.0902</version>
+    <version>25.05.1101</version>
 
     <build>
         <plugins>
@@ -48,9 +48,14 @@
         <dependency>
             <groupId>nws.dev</groupId>
             <artifactId>core</artifactId>
-            <version>25.05.0901</version>
+            <version>25.05.1000</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.0</version> <!-- 使用最新版本 -->
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

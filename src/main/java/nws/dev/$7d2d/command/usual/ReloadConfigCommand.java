@@ -22,7 +22,7 @@ public class ReloadConfigCommand extends QQUsualCommand {
 
     @Override
     public boolean privateMsg() {
-        sendMsg("即将重新加载配置");
+        sendMsg("reload_config.command.start");
         server.reloadConfig();
         return true;
     }

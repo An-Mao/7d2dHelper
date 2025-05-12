@@ -2,8 +2,8 @@ package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
 import nws.dev.$7d2d.$7DTD;
-import nws.dev.$7d2d.json._JsonConfig;
 import nws.dev.core.draw._Image;
+import nws.dev.core.json._JsonConfig;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,7 +26,8 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
     private final BufferedImage bufferedImage;
     private final Graphics graphics;
     private final FontMetrics fontMetrics;
-    public DrawConfig(String filePath) {
+    private final Font font;
+    public DrawConfig(String filePath, Font font) {
         super(filePath, """
                 {
                     "width": 256,
@@ -47,7 +48,8 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
         }
         bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
         graphics = bufferedImage.getGraphics();
-        graphics.setFont(Configs.font);
+        this.font = font;
+        graphics.setFont(this.font);
         fontMetrics = graphics.getFontMetrics();
     }
 
@@ -207,7 +209,7 @@ public class DrawConfig extends _JsonConfig<DrawConfig.DrawData> {
         });
         $7DTD._Log.debug(newTexts.toString());
         int height = newTexts.size() * (int)(fontConfig.getLineHeight()+ 2f) + getDatas().top *2;
-        _Image image = new _Image(getDatas().width(), height, getDatas().scaleFactor(), Configs.font);
+        _Image image = new _Image(getDatas().width(), height, getDatas().scaleFactor(), this.font);
         if (getDatas().backgroundType() == 0) {
             image.drawImage(getBackgroundImage(), 0, 0);
         } else if (getDatas().backgroundType() == 1) {

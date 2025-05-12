@@ -27,7 +27,7 @@ public class SignHelpCommand extends QQUsualCommand {
 
     private boolean signHelp() {
         $7DTD._Log.info("获取签到帮助");
-        sendMsg("签到时您可以@一位玩家来绑定。如果对方当日签到并且您在线，则可以额外获得一次签到奖励。若其当日未签到，您将无法获取下次签到奖励");
+        sendMsg("sign_help.command.tip");
         return true;
     }
 }

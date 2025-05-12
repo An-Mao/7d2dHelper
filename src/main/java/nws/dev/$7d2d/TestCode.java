@@ -89,5 +89,6 @@ public class TestCode {
         }
 
          */
+        $7DTD._Log.debug(String.format("测试数：%s",1));
     }
 }

@@ -22,13 +22,13 @@ public class CloseNetCommand extends QQUsualCommand {
     @Override
     public boolean privateMsg() {
         if (System.currentTimeMillis() - server.wt < 60000) {
-            if (server.restartThread.isAlive()) sendMsg("重启进程运行中，请勿执行此指令");
+            if (server.restartThread.isAlive()) sendMsg("close_net.command.error.is_restart");
             else {
-                sendMsg("即将关闭网关");
+                sendMsg("close_net.command.close");
                 server.kitNet.stopNet();
             }
         } else {
-            sendMsg("您正在运行高危指令，如果确实想运行，请在60秒内再发一次此指令");
+            sendMsg("close_net.command.warn");
             server.wt = System.currentTimeMillis();
         }
         return true;

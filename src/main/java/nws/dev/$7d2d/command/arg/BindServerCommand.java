@@ -7,6 +7,7 @@ import nws.dev.$7d2d.config.UserUaualConfig;
 import nws.dev.$7d2d.data.Permission;
 import nws.dev.$7d2d.data.QQData;
 import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.$7d2d.server.ServerList;
 
 @Command(name = BindServerCommand.COMMAND_NAME,permission = Permission.User,type = CommandType.Private,desc = "绑定服务器 服务器名")
 public class BindServerCommand extends QQExCommand {
@@ -18,14 +19,14 @@ public class BindServerCommand extends QQExCommand {
     @Override
     public boolean runCommand() {
             if (isGroup && isEnableGroup())return false;
-            if (this.rawArg.isEmpty() || !ServerCore.LIST.containsKey(this.rawArg)) {
-                sendMsg("指定服务器名称不存在，请重试");
+            if (this.rawArg.isEmpty() || !ServerList.LIST.containsKey(this.rawArg)) {
+                sendMsg("bind_server.command.error.not_found");
                 return true;
             }
             UserUaualConfig userUaualConfig = new UserUaualConfig(this.qq);
             userUaualConfig.getDatas().setPrivateServer(this.rawArg);
             userUaualConfig.save();
-            sendMsg("绑定成功");
+            sendMsg("bind_server.command.success");
             return true;
     }
 

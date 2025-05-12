@@ -28,15 +28,15 @@ public class AgreeSaveCommand extends QQExCommand {
     private boolean agreeSave() {
             String target = args[1];
             if (target.isEmpty()) {
-                sendMsg("指令格式错误，正确格式：同意跟档 qq");
+                sendMsg("agree_save.command.error.args_number");
                 return false;
             }else {
                 UserConfig config = server.getUserData(target);
                 if (config.isBind()) {
                     config.getDatas().canExtractSaveItem = true;
                     config.save();
-                    sendMsg("已同意跟档申请");
-                } else sendMsg("对方未绑定账号");
+                    sendMsg("agree_save.command.success");
+                } else sendMsg("usual.command.error.target_not_bind");
             }
 
         return true;

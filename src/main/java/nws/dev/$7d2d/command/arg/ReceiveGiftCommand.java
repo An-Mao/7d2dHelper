@@ -28,23 +28,16 @@ public class ReceiveGiftCommand extends QQExCommand {
 
     private boolean receiveGift() {
         if (argCheck(2)) {
-            sendMsg("指令格式错误，正确格式：领取礼包 礼包名称");
+            sendMsg("receive_gift.command.error.args_number");
             return false;
         }
         $7DTD._Log.info("领取礼包");
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()) {
             String r = args[1];
-            $7DTD._Log.debug("已绑定账号");
-            if (config.isReward(r))
-                sendMsg("您已领取过【" + r + "】礼包");
-            else {
-                sendMsg( server.botNet.giveReward(config, r));
-            }
-        } else {
-            $7DTD._Log.debug("未绑定账号");
-            sendMsg("未绑定账号，请先绑定账号");
-        }
+            if (config.isReward(r)) sendFormatMsg("receive_gift.command.error.has", r );
+            else sendMsg( server.botNet.giveReward(config, r));
+        } else sendMsg("usual.command.error.not_bind");
         return true;
     }
 

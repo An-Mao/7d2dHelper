@@ -32,20 +32,12 @@ public class KillSelfCommand extends QQUsualCommand {
         UserConfig config = server.getUserData(this.qq);
         if (config.isBind()) {
             BotData.PlayerInfo info = server.botNet.getOnlinePlayerBySteamID(config.getSteamID());
-            if (info == null) {
-                $7DTD._Log.debug("未找到玩家");
-                sendMsg( "未找到玩家，请确认玩家是否在线");
-            }else {
-                if (server.sendServerCommand("kill "+info.entityid())) {
-                    $7DTD._Log.debug("自杀成功");
-                    sendMsg( "自杀成功");
-                } else
-                    sendMsg( "自杀失败，请稍后再试");
+            if (info == null) sendMsg("usual.command.error.not_online");
+            else {
+                if (server.sendServerCommand("kill "+info.entityid())) sendMsg("kill_self.command.success");
+                else sendMsg("kill_self.command.error.net");
             }
-        } else {
-            $7DTD._Log.debug("未绑定账号");
-            sendMsg( "未绑定账号，请先绑定账号");
-        }
+        } else sendMsg("usual.command.error.not_bind");
         return true;
     }
 }

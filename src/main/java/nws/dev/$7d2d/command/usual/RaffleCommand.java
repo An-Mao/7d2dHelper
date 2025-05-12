@@ -29,16 +29,14 @@ public class RaffleCommand extends QQUsualCommand {
         UserConfig userConfig = server.getUserData(this.qq);
         if (userConfig.isBind()) {
             if (System.currentTimeMillis() - userConfig.getDatas().raffleTime < server.raffleConfig.getDatas().cooldown * 1000L) {
-                sendMsg("冷却中");
+                sendMsg("raffle.command.error.cooldown");
                 return true;
             }
             BotData.PlayerInfo playerInfo = server.botNet.getOnlinePlayerBySteamID(userConfig.getSteamID());
-            if (playerInfo == null) {
-                sendMsg("该玩家不在线");
-                return true;
-            }else {
+            if (playerInfo == null) sendMsg("usual.command.error.not_online");
+            else {
                 if (playerInfo.point() < server.raffleConfig.getDatas().point) {
-                    sendMsg("积分不足");
+                    sendMsg("usual.command.error.point_insufficient");
                     return true;
                 }
                 RewardData s = server.raffleConfig.getDatas().random().getRandom();
@@ -49,15 +47,11 @@ public class RaffleCommand extends QQUsualCommand {
                     server.botNet.addPoint(userConfig, -server.raffleConfig.getDatas().point);
                     $7DTD._Log.debug(s.name);
 
-                    sendMsg("花费" + server.raffleConfig.getDatas().point + "积分，抽奖结果：\\n" + server.botNet.giveReward(userConfig, s));
-                    return true;
-                }
+                    sendFormatMsg("raffle.command.success", server.raffleConfig.getDatas().point , server.botNet.giveReward(userConfig, s));
+                }else sendMsg("raffle.command.error.net");
             }
-        } else {
-            sendMsg("未绑定账号，请先绑定账号");
-            return true;
-        }
-        return false;
+        } else sendMsg("usual.command.error.not_bind");
+        return true;
     }
 
     @Override

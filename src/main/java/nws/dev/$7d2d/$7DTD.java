@@ -3,7 +3,7 @@ package nws.dev.$7d2d;
 import nws.dev.$7d2d.config.Config;
 import nws.dev.$7d2d.event.Events;
 import nws.dev.$7d2d.net.QQNet;
-import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.$7d2d.server.ServerList;
 import nws.dev.core.system._Log;
 
 import java.io.IOException;
@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class $7DTD {
-    public static final  _Log _Log = new _Log(getLogFileName());
+    public static final  _Log _Log = new _Log(getLogFileName(),Config.I.getDatas().logColor());
+    static {
+        _Log.Debug = Config.I.getDatas().isDebug();
+    }
     public static void init() {
         try {
             loginUser();
@@ -33,7 +36,7 @@ public class $7DTD {
         return DataTable.LogDir + "/"+formattedDateTime+".log";
     }
     public static void loginUser() {
-        ServerCore.LIST.forEach((s, serverList) -> serverList.login());
+        ServerList.LIST.forEach((s, serverList) -> serverList.login());
     }
 
 }

@@ -2,8 +2,8 @@ package nws.dev.$7d2d.config;
 
 import com.google.gson.reflect.TypeToken;
 import nws.dev.$7d2d.data.ACItemsData;
-import nws.dev.$7d2d.json._JsonConfig;
-import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.$7d2d.server.ServerConfig;
+import nws.dev.core.json._JsonConfig;
 
 public class AutoWhiteListConfig extends _JsonConfig<AutoWhiteListConfig.AutoWhiteListCD> {
     public AutoWhiteListConfig(String filePath) {
@@ -35,7 +35,7 @@ public class AutoWhiteListConfig extends _JsonConfig<AutoWhiteListConfig.AutoWhi
         return getDatas().whiteItem();
     }
 
-    public void checkRecipe(ServerCore serverCore, GameInfo.Recipe recipe){
+    public void checkRecipe(ServerConfig serverCore, GameInfo.Recipe recipe){
         if (recipe.items().containsKey(getWhiteItem())){
             if (serverCore.acItem.includes(recipe.name())) return;
             int[] pl = {recipe.items().size() * getDatas().itemPoint(),

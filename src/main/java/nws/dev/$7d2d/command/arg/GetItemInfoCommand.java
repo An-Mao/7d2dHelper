@@ -34,7 +34,7 @@ public class GetItemInfoCommand extends QQExCommand {
 
     private boolean getItemInfo() {
         if (args[1].isEmpty()){
-            sendMsg("物品名称不能为空");
+            sendMsg("find_item.command.error.empty");
             return false;
         }
         StringBuilder s = new StringBuilder();
@@ -51,9 +51,7 @@ public class GetItemInfoCommand extends QQExCommand {
             if (!new File(md5).exists()) server.drawConfig.createImage(server.fontConfig,List.of(r.split("\\\\n"))).save(md5);
 
             QQHelper.sendMsg(Urls.qqSendGroupMsg,QQHelper.data.replace("<group>",this.group).replace("<file>",convertPathToUri(md5)));
-        }else {
-            sendMsg(r);
-        }
+        }else sendMsg(r);
         return true;
     }
 }

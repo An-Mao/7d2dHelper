@@ -2,7 +2,7 @@ package nws.dev.$7d2d.event;
 
 import nws.dev.$7d2d.$7DTD;
 import nws.dev.$7d2d.helper.QQHelper;
-import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.$7d2d.server.ServerList;
 import nws.dev.core.system._ThreadMonitor;
 
 import java.text.SimpleDateFormat;
@@ -25,7 +25,7 @@ public class Events {
                 }
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 String k = sdf.format(new Date());
-                ServerCore.LIST.forEach((s, serverCore) -> {
+                ServerList.LIST.forEach((s, serverCore) -> {
                     if (refresh[0]) {
                         serverCore.no.clear();
                         serverCore.kitNet.refreshMap();

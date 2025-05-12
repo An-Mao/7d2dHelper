@@ -27,9 +27,11 @@ public class EventListCommand extends QQUsualCommand {
 
     private boolean eventList() {
         $7DTD._Log.info("获取活动列表");
-        StringBuilder s = new StringBuilder("-----活动列表-----");
+        StringBuilder s = new StringBuilder();
         server.eventList.getDatas().forEach((k, v) -> s.append("\\n[").append(k).append("]:").append(v));
-        sendMsg(s.toString());
+
+        $7DTD._Log.debug(s.toString());
+        sendFormatMsg("event_list.command.tip",s.toString());
         return true;
 
     }

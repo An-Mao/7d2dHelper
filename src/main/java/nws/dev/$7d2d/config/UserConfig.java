@@ -3,8 +3,8 @@ package nws.dev.$7d2d.config;
 import com.google.gson.reflect.TypeToken;
 import nws.dev.$7d2d.data.PlayerInfoData;
 import nws.dev.$7d2d.data.UserData;
-import nws.dev.$7d2d.json._JsonConfig;
 import nws.dev.$7d2d.server.ServerCore;
+import nws.dev.core.json._JsonConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
