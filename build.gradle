@@ -1,0 +1,46 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
+    id 'idea'
+}
+
+def baseName = "helper"
+def mainC = "dev.anye.sdtd.helper.Main"
+group = 'dev.anye.sdtd'
+version = '25.05.2301'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation("org.jetbrains:annotations:24.0.0")
+    implementation("net.java.dev.jna:jna-platform:5.15.0")
+    implementation("com.google.code.gson:gson:2.13.1")
+    implementation("org.graalvm.polyglot:polyglot:24.2.1")
+    implementation("org.graalvm.polyglot:js:24.2.1")
+    implementation("dev.anye:core:25.05.2200")
+}
+
+
+tasks{
+    shadowJar {
+        archiveBaseName.set(baseName)
+        archiveClassifier.set("all")
+        manifest {
+            attributes("Main-Class" : mainC)
+        }
+        mergeServiceFiles()
+        configurations = [
+                project.configurations.runtimeClasspath
+        ]
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+test {
+    jvmArgs '-Dfile.encoding=UTF-8'
+}
